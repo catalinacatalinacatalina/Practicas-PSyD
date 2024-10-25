@@ -11,8 +11,862 @@
   11              		.file	"rtc.c"
   21              	.Ltext0:
   22              		.file 1 "../src/rtc.c"
- 965              	.Letext0:
+ 1911              		.align	2
+ 1912              		.global	rtc_init
+ 1914              	rtc_init:
+ 1915              	.LFB0:
+   1:../src/rtc.c  **** #include <s3c44b0x.h>
+   2:../src/rtc.c  **** #include <s3cev40.h>
+   3:../src/rtc.c  **** #include <rtc.h>
+   4:../src/rtc.c  **** #include <uart.h>
+   5:../src/rtc.c  **** 
+   6:../src/rtc.c  **** extern void isr_TICK_dummy( void );
+   7:../src/rtc.c  **** 
+   8:../src/rtc.c  **** 
+   9:../src/rtc.c  **** void rtc_init( void )
+  10:../src/rtc.c  **** {
+ 1916              		.loc 1 10 0
+ 1917              		.cfi_startproc
+ 1918              		@ Function supports interworking.
+ 1919              		@ args = 0, pretend = 0, frame = 0
+ 1920              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1921 0000 0DC0A0E1 		mov	ip, sp
+ 1922              	.LCFI0:
+ 1923              		.cfi_def_cfa_register 12
+ 1924 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1925 0008 04B04CE2 		sub	fp, ip, #4
+ 1926              		.cfi_offset 14, -8
+ 1927              		.cfi_offset 13, -12
+ 1928              		.cfi_offset 11, -16
+ 1929              	.LCFI1:
+ 1930              		.cfi_def_cfa 11, 4
+  11:../src/rtc.c  **** 	TICNT   = 0x0;
+ 1931              		.loc 1 11 0
+ 1932 000c E4309FE5 		ldr	r3, .L2
+ 1933 0010 0020A0E3 		mov	r2, #0
+ 1934 0014 002083E5 		str	r2, [r3, #0]
+  12:../src/rtc.c  **** 	RTCALM  = 0x0;
+ 1935              		.loc 1 12 0
+ 1936 0018 DC309FE5 		ldr	r3, .L2+4
+ 1937 001c 0020A0E3 		mov	r2, #0
+ 1938 0020 002083E5 		str	r2, [r3, #0]
+  13:../src/rtc.c  **** 	RTCRST  = 0x0;
+ 1939              		.loc 1 13 0
+ 1940 0024 D4309FE5 		ldr	r3, .L2+8
+ 1941 0028 0020A0E3 		mov	r2, #0
+ 1942 002c 002083E5 		str	r2, [r3, #0]
+  14:../src/rtc.c  **** 
+  15:../src/rtc.c  **** 	RTCCON  = 0x9;
+ 1943              		.loc 1 15 0
+ 1944 0030 CC309FE5 		ldr	r3, .L2+12
+ 1945 0034 0920A0E3 		mov	r2, #9
+ 1946 0038 002083E5 		str	r2, [r3, #0]
+  16:../src/rtc.c  **** 
+  17:../src/rtc.c  **** 	BCDYEAR = 0x13;
+ 1947              		.loc 1 17 0
+ 1948 003c C4309FE5 		ldr	r3, .L2+16
+ 1949 0040 1320A0E3 		mov	r2, #19
+ 1950 0044 002083E5 		str	r2, [r3, #0]
+  18:../src/rtc.c  **** 	BCDMON  = 0x01;
+ 1951              		.loc 1 18 0
+ 1952 0048 BC309FE5 		ldr	r3, .L2+20
+ 1953 004c 0120A0E3 		mov	r2, #1
+ 1954 0050 002083E5 		str	r2, [r3, #0]
+  19:../src/rtc.c  **** 	BCDDAY  = 0x01;
+ 1955              		.loc 1 19 0
+ 1956 0054 B4309FE5 		ldr	r3, .L2+24
+ 1957 0058 0120A0E3 		mov	r2, #1
+ 1958 005c 002083E5 		str	r2, [r3, #0]
+  20:../src/rtc.c  **** 	BCDDATE = 0x01;
+ 1959              		.loc 1 20 0
+ 1960 0060 AC309FE5 		ldr	r3, .L2+28
+ 1961 0064 0120A0E3 		mov	r2, #1
+ 1962 0068 002083E5 		str	r2, [r3, #0]
+  21:../src/rtc.c  **** 	BCDHOUR = 0x00;
+ 1963              		.loc 1 21 0
+ 1964 006c A4309FE5 		ldr	r3, .L2+32
+ 1965 0070 0020A0E3 		mov	r2, #0
+ 1966 0074 002083E5 		str	r2, [r3, #0]
+  22:../src/rtc.c  **** 	BCDMIN  = 0x00;
+ 1967              		.loc 1 22 0
+ 1968 0078 9C309FE5 		ldr	r3, .L2+36
+ 1969 007c 0020A0E3 		mov	r2, #0
+ 1970 0080 002083E5 		str	r2, [r3, #0]
+  23:../src/rtc.c  **** 	BCDSEC  = 0x00;
+ 1971              		.loc 1 23 0
+ 1972 0084 94309FE5 		ldr	r3, .L2+40
+ 1973 0088 0020A0E3 		mov	r2, #0
+ 1974 008c 002083E5 		str	r2, [r3, #0]
+  24:../src/rtc.c  **** 
+  25:../src/rtc.c  **** 	ALMYEAR = 0x0;
+ 1975              		.loc 1 25 0
+ 1976 0090 8C309FE5 		ldr	r3, .L2+44
+ 1977 0094 0020A0E3 		mov	r2, #0
+ 1978 0098 002083E5 		str	r2, [r3, #0]
+  26:../src/rtc.c  **** 	ALMMON  = 0x0;
+ 1979              		.loc 1 26 0
+ 1980 009c 84309FE5 		ldr	r3, .L2+48
+ 1981 00a0 0020A0E3 		mov	r2, #0
+ 1982 00a4 002083E5 		str	r2, [r3, #0]
+  27:../src/rtc.c  **** 	ALMDAY  = 0x0;
+ 1983              		.loc 1 27 0
+ 1984 00a8 7C309FE5 		ldr	r3, .L2+52
+ 1985 00ac 0020A0E3 		mov	r2, #0
+ 1986 00b0 002083E5 		str	r2, [r3, #0]
+  28:../src/rtc.c  **** 	ALMHOUR = 0x0;
+ 1987              		.loc 1 28 0
+ 1988 00b4 74309FE5 		ldr	r3, .L2+56
+ 1989 00b8 0020A0E3 		mov	r2, #0
+ 1990 00bc 002083E5 		str	r2, [r3, #0]
+  29:../src/rtc.c  **** 	ALMMIN  = 0x0;
+ 1991              		.loc 1 29 0
+ 1992 00c0 6C309FE5 		ldr	r3, .L2+60
+ 1993 00c4 0020A0E3 		mov	r2, #0
+ 1994 00c8 002083E5 		str	r2, [r3, #0]
+  30:../src/rtc.c  **** 	ALMSEC  = 0x0;
+ 1995              		.loc 1 30 0
+ 1996 00cc 64309FE5 		ldr	r3, .L2+64
+ 1997 00d0 0020A0E3 		mov	r2, #0
+ 1998 00d4 002083E5 		str	r2, [r3, #0]
+  31:../src/rtc.c  **** 
+  32:../src/rtc.c  **** 	RTCCON &= 0;
+ 1999              		.loc 1 32 0
+ 2000 00d8 24309FE5 		ldr	r3, .L2+12
+ 2001 00dc 003093E5 		ldr	r3, [r3, #0]
+ 2002 00e0 1C309FE5 		ldr	r3, .L2+12
+ 2003 00e4 0020A0E3 		mov	r2, #0
+ 2004 00e8 002083E5 		str	r2, [r3, #0]
+  33:../src/rtc.c  **** }
+ 2005              		.loc 1 33 0
+ 2006 00ec 0CD04BE2 		sub	sp, fp, #12
+ 2007 00f0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2008 00f4 1EFF2FE1 		bx	lr
+ 2009              	.L3:
+ 2010              		.align	2
+ 2011              	.L2:
+ 2012 00f8 8C00D701 		.word	30867596
+ 2013 00fc 5000D701 		.word	30867536
+ 2014 0100 6C00D701 		.word	30867564
+ 2015 0104 4000D701 		.word	30867520
+ 2016 0108 8800D701 		.word	30867592
+ 2017 010c 8400D701 		.word	30867588
+ 2018 0110 7C00D701 		.word	30867580
+ 2019 0114 8000D701 		.word	30867584
+ 2020 0118 7800D701 		.word	30867576
+ 2021 011c 7400D701 		.word	30867572
+ 2022 0120 7000D701 		.word	30867568
+ 2023 0124 6800D701 		.word	30867560
+ 2024 0128 6400D701 		.word	30867556
+ 2025 012c 6000D701 		.word	30867552
+ 2026 0130 5C00D701 		.word	30867548
+ 2027 0134 5800D701 		.word	30867544
+ 2028 0138 5400D701 		.word	30867540
+ 2029              		.cfi_endproc
+ 2030              	.LFE0:
+ 2032              		.align	2
+ 2033              		.global	rtc_puttime
+ 2035              	rtc_puttime:
+ 2036              	.LFB1:
+  34:../src/rtc.c  **** 
+  35:../src/rtc.c  **** void rtc_puttime( rtc_time_t *rtc_time )
+  36:../src/rtc.c  **** {
+ 2037              		.loc 1 36 0
+ 2038              		.cfi_startproc
+ 2039              		@ Function supports interworking.
+ 2040              		@ args = 0, pretend = 0, frame = 8
+ 2041              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2042 013c 0DC0A0E1 		mov	ip, sp
+ 2043              	.LCFI2:
+ 2044              		.cfi_def_cfa_register 12
+ 2045 0140 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2046 0144 04B04CE2 		sub	fp, ip, #4
+ 2047              		.cfi_offset 14, -8
+ 2048              		.cfi_offset 13, -12
+ 2049              		.cfi_offset 11, -16
+ 2050              	.LCFI3:
+ 2051              		.cfi_def_cfa 11, 4
+ 2052 0148 08D04DE2 		sub	sp, sp, #8
+ 2053 014c 10000BE5 		str	r0, [fp, #-16]
+  37:../src/rtc.c  **** 	RTCCON |= 0x9;
+ 2054              		.loc 1 37 0
+ 2055 0150 78329FE5 		ldr	r3, .L5
+ 2056 0154 74229FE5 		ldr	r2, .L5
+ 2057 0158 002092E5 		ldr	r2, [r2, #0]
+ 2058 015c 092082E3 		orr	r2, r2, #9
+ 2059 0160 002083E5 		str	r2, [r3, #0]
+  38:../src/rtc.c  **** 
+  39:../src/rtc.c  **** 	BCDYEAR = ((rtc_time->year / 10) << 4 | (rtc_time->year %10));
+ 2060              		.loc 1 39 0
+ 2061 0164 68029FE5 		ldr	r0, .L5+4
+ 2062 0168 10301BE5 		ldr	r3, [fp, #-16]
+ 2063 016c 0620D3E5 		ldrb	r2, [r3, #6]	@ zero_extendqisi2
+ 2064 0170 60329FE5 		ldr	r3, .L5+8
+ 2065 0174 921383E0 		umull	r1, r3, r2, r3
+ 2066 0178 A331A0E1 		mov	r3, r3, lsr #3
+ 2067 017c FF3003E2 		and	r3, r3, #255
+ 2068 0180 03C2A0E1 		mov	ip, r3, asl #4
+ 2069 0184 10301BE5 		ldr	r3, [fp, #-16]
+ 2070 0188 0620D3E5 		ldrb	r2, [r3, #6]	@ zero_extendqisi2
+ 2071 018c 44329FE5 		ldr	r3, .L5+8
+ 2072 0190 921383E0 		umull	r1, r3, r2, r3
+ 2073 0194 A311A0E1 		mov	r1, r3, lsr #3
+ 2074 0198 0130A0E1 		mov	r3, r1
+ 2075 019c 0331A0E1 		mov	r3, r3, asl #2
+ 2076 01a0 013083E0 		add	r3, r3, r1
+ 2077 01a4 8330A0E1 		mov	r3, r3, asl #1
+ 2078 01a8 023063E0 		rsb	r3, r3, r2
+ 2079 01ac FF3003E2 		and	r3, r3, #255
+ 2080 01b0 03308CE1 		orr	r3, ip, r3
+ 2081 01b4 003080E5 		str	r3, [r0, #0]
+  40:../src/rtc.c  **** 	BCDMON  = ((rtc_time->mon / 10) << 4 | (rtc_time->mon %10));
+ 2082              		.loc 1 40 0
+ 2083 01b8 1C029FE5 		ldr	r0, .L5+12
+ 2084 01bc 10301BE5 		ldr	r3, [fp, #-16]
+ 2085 01c0 0520D3E5 		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 2086 01c4 0C329FE5 		ldr	r3, .L5+8
+ 2087 01c8 921383E0 		umull	r1, r3, r2, r3
+ 2088 01cc A331A0E1 		mov	r3, r3, lsr #3
+ 2089 01d0 FF3003E2 		and	r3, r3, #255
+ 2090 01d4 03C2A0E1 		mov	ip, r3, asl #4
+ 2091 01d8 10301BE5 		ldr	r3, [fp, #-16]
+ 2092 01dc 0520D3E5 		ldrb	r2, [r3, #5]	@ zero_extendqisi2
+ 2093 01e0 F0319FE5 		ldr	r3, .L5+8
+ 2094 01e4 921383E0 		umull	r1, r3, r2, r3
+ 2095 01e8 A311A0E1 		mov	r1, r3, lsr #3
+ 2096 01ec 0130A0E1 		mov	r3, r1
+ 2097 01f0 0331A0E1 		mov	r3, r3, asl #2
+ 2098 01f4 013083E0 		add	r3, r3, r1
+ 2099 01f8 8330A0E1 		mov	r3, r3, asl #1
+ 2100 01fc 023063E0 		rsb	r3, r3, r2
+ 2101 0200 FF3003E2 		and	r3, r3, #255
+ 2102 0204 03308CE1 		orr	r3, ip, r3
+ 2103 0208 003080E5 		str	r3, [r0, #0]
+  41:../src/rtc.c  **** 	BCDDAY  = ((rtc_time->mday / 10) << 4 | (rtc_time->mday %10));
+ 2104              		.loc 1 41 0
+ 2105 020c CC019FE5 		ldr	r0, .L5+16
+ 2106 0210 10301BE5 		ldr	r3, [fp, #-16]
+ 2107 0214 0320D3E5 		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+ 2108 0218 B8319FE5 		ldr	r3, .L5+8
+ 2109 021c 921383E0 		umull	r1, r3, r2, r3
+ 2110 0220 A331A0E1 		mov	r3, r3, lsr #3
+ 2111 0224 FF3003E2 		and	r3, r3, #255
+ 2112 0228 03C2A0E1 		mov	ip, r3, asl #4
+ 2113 022c 10301BE5 		ldr	r3, [fp, #-16]
+ 2114 0230 0320D3E5 		ldrb	r2, [r3, #3]	@ zero_extendqisi2
+ 2115 0234 9C319FE5 		ldr	r3, .L5+8
+ 2116 0238 921383E0 		umull	r1, r3, r2, r3
+ 2117 023c A311A0E1 		mov	r1, r3, lsr #3
+ 2118 0240 0130A0E1 		mov	r3, r1
+ 2119 0244 0331A0E1 		mov	r3, r3, asl #2
+ 2120 0248 013083E0 		add	r3, r3, r1
+ 2121 024c 8330A0E1 		mov	r3, r3, asl #1
+ 2122 0250 023063E0 		rsb	r3, r3, r2
+ 2123 0254 FF3003E2 		and	r3, r3, #255
+ 2124 0258 03308CE1 		orr	r3, ip, r3
+ 2125 025c 003080E5 		str	r3, [r0, #0]
+  42:../src/rtc.c  **** 	BCDDATE = ((rtc_time->wday / 10) << 4 | (rtc_time->wday %10));
+ 2126              		.loc 1 42 0
+ 2127 0260 7C019FE5 		ldr	r0, .L5+20
+ 2128 0264 10301BE5 		ldr	r3, [fp, #-16]
+ 2129 0268 0420D3E5 		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 2130 026c 64319FE5 		ldr	r3, .L5+8
+ 2131 0270 921383E0 		umull	r1, r3, r2, r3
+ 2132 0274 A331A0E1 		mov	r3, r3, lsr #3
+ 2133 0278 FF3003E2 		and	r3, r3, #255
+ 2134 027c 03C2A0E1 		mov	ip, r3, asl #4
+ 2135 0280 10301BE5 		ldr	r3, [fp, #-16]
+ 2136 0284 0420D3E5 		ldrb	r2, [r3, #4]	@ zero_extendqisi2
+ 2137 0288 48319FE5 		ldr	r3, .L5+8
+ 2138 028c 921383E0 		umull	r1, r3, r2, r3
+ 2139 0290 A311A0E1 		mov	r1, r3, lsr #3
+ 2140 0294 0130A0E1 		mov	r3, r1
+ 2141 0298 0331A0E1 		mov	r3, r3, asl #2
+ 2142 029c 013083E0 		add	r3, r3, r1
+ 2143 02a0 8330A0E1 		mov	r3, r3, asl #1
+ 2144 02a4 023063E0 		rsb	r3, r3, r2
+ 2145 02a8 FF3003E2 		and	r3, r3, #255
+ 2146 02ac 03308CE1 		orr	r3, ip, r3
+ 2147 02b0 003080E5 		str	r3, [r0, #0]
+  43:../src/rtc.c  **** 	BCDHOUR = ((rtc_time->hour / 10) << 4 | (rtc_time->hour %10));
+ 2148              		.loc 1 43 0
+ 2149 02b4 2C019FE5 		ldr	r0, .L5+24
+ 2150 02b8 10301BE5 		ldr	r3, [fp, #-16]
+ 2151 02bc 0220D3E5 		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 2152 02c0 10319FE5 		ldr	r3, .L5+8
+ 2153 02c4 921383E0 		umull	r1, r3, r2, r3
+ 2154 02c8 A331A0E1 		mov	r3, r3, lsr #3
+ 2155 02cc FF3003E2 		and	r3, r3, #255
+ 2156 02d0 03C2A0E1 		mov	ip, r3, asl #4
+ 2157 02d4 10301BE5 		ldr	r3, [fp, #-16]
+ 2158 02d8 0220D3E5 		ldrb	r2, [r3, #2]	@ zero_extendqisi2
+ 2159 02dc F4309FE5 		ldr	r3, .L5+8
+ 2160 02e0 921383E0 		umull	r1, r3, r2, r3
+ 2161 02e4 A311A0E1 		mov	r1, r3, lsr #3
+ 2162 02e8 0130A0E1 		mov	r3, r1
+ 2163 02ec 0331A0E1 		mov	r3, r3, asl #2
+ 2164 02f0 013083E0 		add	r3, r3, r1
+ 2165 02f4 8330A0E1 		mov	r3, r3, asl #1
+ 2166 02f8 023063E0 		rsb	r3, r3, r2
+ 2167 02fc FF3003E2 		and	r3, r3, #255
+ 2168 0300 03308CE1 		orr	r3, ip, r3
+ 2169 0304 003080E5 		str	r3, [r0, #0]
+  44:../src/rtc.c  **** 	BCDMIN  = ((rtc_time->min / 10) << 4 | (rtc_time->min %10));
+ 2170              		.loc 1 44 0
+ 2171 0308 DC009FE5 		ldr	r0, .L5+28
+ 2172 030c 10301BE5 		ldr	r3, [fp, #-16]
+ 2173 0310 0120D3E5 		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 2174 0314 BC309FE5 		ldr	r3, .L5+8
+ 2175 0318 921383E0 		umull	r1, r3, r2, r3
+ 2176 031c A331A0E1 		mov	r3, r3, lsr #3
+ 2177 0320 FF3003E2 		and	r3, r3, #255
+ 2178 0324 03C2A0E1 		mov	ip, r3, asl #4
+ 2179 0328 10301BE5 		ldr	r3, [fp, #-16]
+ 2180 032c 0120D3E5 		ldrb	r2, [r3, #1]	@ zero_extendqisi2
+ 2181 0330 A0309FE5 		ldr	r3, .L5+8
+ 2182 0334 921383E0 		umull	r1, r3, r2, r3
+ 2183 0338 A311A0E1 		mov	r1, r3, lsr #3
+ 2184 033c 0130A0E1 		mov	r3, r1
+ 2185 0340 0331A0E1 		mov	r3, r3, asl #2
+ 2186 0344 013083E0 		add	r3, r3, r1
+ 2187 0348 8330A0E1 		mov	r3, r3, asl #1
+ 2188 034c 023063E0 		rsb	r3, r3, r2
+ 2189 0350 FF3003E2 		and	r3, r3, #255
+ 2190 0354 03308CE1 		orr	r3, ip, r3
+ 2191 0358 003080E5 		str	r3, [r0, #0]
+  45:../src/rtc.c  **** 	BCDSEC  = ((rtc_time->sec / 10) << 4 | (rtc_time->sec %10));
+ 2192              		.loc 1 45 0
+ 2193 035c 8C009FE5 		ldr	r0, .L5+32
+ 2194 0360 10301BE5 		ldr	r3, [fp, #-16]
+ 2195 0364 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 2196 0368 68309FE5 		ldr	r3, .L5+8
+ 2197 036c 921383E0 		umull	r1, r3, r2, r3
+ 2198 0370 A331A0E1 		mov	r3, r3, lsr #3
+ 2199 0374 FF3003E2 		and	r3, r3, #255
+ 2200 0378 03C2A0E1 		mov	ip, r3, asl #4
+ 2201 037c 10301BE5 		ldr	r3, [fp, #-16]
+ 2202 0380 0020D3E5 		ldrb	r2, [r3, #0]	@ zero_extendqisi2
+ 2203 0384 4C309FE5 		ldr	r3, .L5+8
+ 2204 0388 921383E0 		umull	r1, r3, r2, r3
+ 2205 038c A311A0E1 		mov	r1, r3, lsr #3
+ 2206 0390 0130A0E1 		mov	r3, r1
+ 2207 0394 0331A0E1 		mov	r3, r3, asl #2
+ 2208 0398 013083E0 		add	r3, r3, r1
+ 2209 039c 8330A0E1 		mov	r3, r3, asl #1
+ 2210 03a0 023063E0 		rsb	r3, r3, r2
+ 2211 03a4 FF3003E2 		and	r3, r3, #255
+ 2212 03a8 03308CE1 		orr	r3, ip, r3
+ 2213 03ac 003080E5 		str	r3, [r0, #0]
+  46:../src/rtc.c  **** 
+  47:../src/rtc.c  **** 	RTCCON &= 0;
+ 2214              		.loc 1 47 0
+ 2215 03b0 18309FE5 		ldr	r3, .L5
+ 2216 03b4 003093E5 		ldr	r3, [r3, #0]
+ 2217 03b8 10309FE5 		ldr	r3, .L5
+ 2218 03bc 0020A0E3 		mov	r2, #0
+ 2219 03c0 002083E5 		str	r2, [r3, #0]
+  48:../src/rtc.c  **** }
+ 2220              		.loc 1 48 0
+ 2221 03c4 0CD04BE2 		sub	sp, fp, #12
+ 2222 03c8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2223 03cc 1EFF2FE1 		bx	lr
+ 2224              	.L6:
+ 2225              		.align	2
+ 2226              	.L5:
+ 2227 03d0 4000D701 		.word	30867520
+ 2228 03d4 8800D701 		.word	30867592
+ 2229 03d8 CDCCCCCC 		.word	-858993459
+ 2230 03dc 8400D701 		.word	30867588
+ 2231 03e0 7C00D701 		.word	30867580
+ 2232 03e4 8000D701 		.word	30867584
+ 2233 03e8 7800D701 		.word	30867576
+ 2234 03ec 7400D701 		.word	30867572
+ 2235 03f0 7000D701 		.word	30867568
+ 2236              		.cfi_endproc
+ 2237              	.LFE1:
+ 2239              		.align	2
+ 2240              		.global	rtc_gettime
+ 2242              	rtc_gettime:
+ 2243              	.LFB2:
+  49:../src/rtc.c  **** 
+  50:../src/rtc.c  **** void rtc_gettime( rtc_time_t *rtc_time )
+  51:../src/rtc.c  **** {
+ 2244              		.loc 1 51 0
+ 2245              		.cfi_startproc
+ 2246              		@ Function supports interworking.
+ 2247              		@ args = 0, pretend = 0, frame = 8
+ 2248              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2249 03f4 0DC0A0E1 		mov	ip, sp
+ 2250              	.LCFI4:
+ 2251              		.cfi_def_cfa_register 12
+ 2252 03f8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2253 03fc 04B04CE2 		sub	fp, ip, #4
+ 2254              		.cfi_offset 14, -8
+ 2255              		.cfi_offset 13, -12
+ 2256              		.cfi_offset 11, -16
+ 2257              	.LCFI5:
+ 2258              		.cfi_def_cfa 11, 4
+ 2259 0400 08D04DE2 		sub	sp, sp, #8
+ 2260 0404 10000BE5 		str	r0, [fp, #-16]
+  52:../src/rtc.c  **** 	RTCCON |= 0x01;
+ 2261              		.loc 1 52 0
+ 2262 0408 2C349FE5 		ldr	r3, .L9
+ 2263 040c 28249FE5 		ldr	r2, .L9
+ 2264 0410 002092E5 		ldr	r2, [r2, #0]
+ 2265 0414 012082E3 		orr	r2, r2, #1
+ 2266 0418 002083E5 		str	r2, [r3, #0]
+  53:../src/rtc.c  **** 
+  54:../src/rtc.c  **** 	rtc_time->year = ((BCDYEAR >> 4) * 10) + (BCDYEAR & 0xF);
+ 2267              		.loc 1 54 0
+ 2268 041c 1C349FE5 		ldr	r3, .L9+4
+ 2269 0420 003093E5 		ldr	r3, [r3, #0]
+ 2270 0424 2332A0E1 		mov	r3, r3, lsr #4
+ 2271 0428 FF3003E2 		and	r3, r3, #255
+ 2272 042c 0320A0E1 		mov	r2, r3
+ 2273 0430 0221A0E1 		mov	r2, r2, asl #2
+ 2274 0434 033082E0 		add	r3, r2, r3
+ 2275 0438 8330A0E1 		mov	r3, r3, asl #1
+ 2276 043c FF2003E2 		and	r2, r3, #255
+ 2277 0440 F8339FE5 		ldr	r3, .L9+4
+ 2278 0444 003093E5 		ldr	r3, [r3, #0]
+ 2279 0448 FF3003E2 		and	r3, r3, #255
+ 2280 044c 0F3003E2 		and	r3, r3, #15
+ 2281 0450 FF3003E2 		and	r3, r3, #255
+ 2282 0454 033082E0 		add	r3, r2, r3
+ 2283 0458 FF2003E2 		and	r2, r3, #255
+ 2284 045c 10301BE5 		ldr	r3, [fp, #-16]
+ 2285 0460 0620C3E5 		strb	r2, [r3, #6]
+  55:../src/rtc.c  **** 	rtc_time->mon  = ((BCDMON >> 4) * 10) + (BCDMON & 0xF);
+ 2286              		.loc 1 55 0
+ 2287 0464 D8339FE5 		ldr	r3, .L9+8
+ 2288 0468 003093E5 		ldr	r3, [r3, #0]
+ 2289 046c 2332A0E1 		mov	r3, r3, lsr #4
+ 2290 0470 FF3003E2 		and	r3, r3, #255
+ 2291 0474 0320A0E1 		mov	r2, r3
+ 2292 0478 0221A0E1 		mov	r2, r2, asl #2
+ 2293 047c 033082E0 		add	r3, r2, r3
+ 2294 0480 8330A0E1 		mov	r3, r3, asl #1
+ 2295 0484 FF2003E2 		and	r2, r3, #255
+ 2296 0488 B4339FE5 		ldr	r3, .L9+8
+ 2297 048c 003093E5 		ldr	r3, [r3, #0]
+ 2298 0490 FF3003E2 		and	r3, r3, #255
+ 2299 0494 0F3003E2 		and	r3, r3, #15
+ 2300 0498 FF3003E2 		and	r3, r3, #255
+ 2301 049c 033082E0 		add	r3, r2, r3
+ 2302 04a0 FF2003E2 		and	r2, r3, #255
+ 2303 04a4 10301BE5 		ldr	r3, [fp, #-16]
+ 2304 04a8 0520C3E5 		strb	r2, [r3, #5]
+  56:../src/rtc.c  **** 	rtc_time->mday = ((BCDDAY >> 4) * 10) + (BCDDAY & 0xF);
+ 2305              		.loc 1 56 0
+ 2306 04ac 94339FE5 		ldr	r3, .L9+12
+ 2307 04b0 003093E5 		ldr	r3, [r3, #0]
+ 2308 04b4 2332A0E1 		mov	r3, r3, lsr #4
+ 2309 04b8 FF3003E2 		and	r3, r3, #255
+ 2310 04bc 0320A0E1 		mov	r2, r3
+ 2311 04c0 0221A0E1 		mov	r2, r2, asl #2
+ 2312 04c4 033082E0 		add	r3, r2, r3
+ 2313 04c8 8330A0E1 		mov	r3, r3, asl #1
+ 2314 04cc FF2003E2 		and	r2, r3, #255
+ 2315 04d0 70339FE5 		ldr	r3, .L9+12
+ 2316 04d4 003093E5 		ldr	r3, [r3, #0]
+ 2317 04d8 FF3003E2 		and	r3, r3, #255
+ 2318 04dc 0F3003E2 		and	r3, r3, #15
+ 2319 04e0 FF3003E2 		and	r3, r3, #255
+ 2320 04e4 033082E0 		add	r3, r2, r3
+ 2321 04e8 FF2003E2 		and	r2, r3, #255
+ 2322 04ec 10301BE5 		ldr	r3, [fp, #-16]
+ 2323 04f0 0320C3E5 		strb	r2, [r3, #3]
+  57:../src/rtc.c  **** 	rtc_time->wday = ((BCDDATE >> 4) * 10) + (BCDDATE & 0xF);
+ 2324              		.loc 1 57 0
+ 2325 04f4 50339FE5 		ldr	r3, .L9+16
+ 2326 04f8 003093E5 		ldr	r3, [r3, #0]
+ 2327 04fc 2332A0E1 		mov	r3, r3, lsr #4
+ 2328 0500 FF3003E2 		and	r3, r3, #255
+ 2329 0504 0320A0E1 		mov	r2, r3
+ 2330 0508 0221A0E1 		mov	r2, r2, asl #2
+ 2331 050c 033082E0 		add	r3, r2, r3
+ 2332 0510 8330A0E1 		mov	r3, r3, asl #1
+ 2333 0514 FF2003E2 		and	r2, r3, #255
+ 2334 0518 2C339FE5 		ldr	r3, .L9+16
+ 2335 051c 003093E5 		ldr	r3, [r3, #0]
+ 2336 0520 FF3003E2 		and	r3, r3, #255
+ 2337 0524 0F3003E2 		and	r3, r3, #15
+ 2338 0528 FF3003E2 		and	r3, r3, #255
+ 2339 052c 033082E0 		add	r3, r2, r3
+ 2340 0530 FF2003E2 		and	r2, r3, #255
+ 2341 0534 10301BE5 		ldr	r3, [fp, #-16]
+ 2342 0538 0420C3E5 		strb	r2, [r3, #4]
+  58:../src/rtc.c  **** 	rtc_time->hour = ((BCDHOUR >> 4) * 10) + (BCDHOUR & 0xF);
+ 2343              		.loc 1 58 0
+ 2344 053c 0C339FE5 		ldr	r3, .L9+20
+ 2345 0540 003093E5 		ldr	r3, [r3, #0]
+ 2346 0544 2332A0E1 		mov	r3, r3, lsr #4
+ 2347 0548 FF3003E2 		and	r3, r3, #255
+ 2348 054c 0320A0E1 		mov	r2, r3
+ 2349 0550 0221A0E1 		mov	r2, r2, asl #2
+ 2350 0554 033082E0 		add	r3, r2, r3
+ 2351 0558 8330A0E1 		mov	r3, r3, asl #1
+ 2352 055c FF2003E2 		and	r2, r3, #255
+ 2353 0560 E8329FE5 		ldr	r3, .L9+20
+ 2354 0564 003093E5 		ldr	r3, [r3, #0]
+ 2355 0568 FF3003E2 		and	r3, r3, #255
+ 2356 056c 0F3003E2 		and	r3, r3, #15
+ 2357 0570 FF3003E2 		and	r3, r3, #255
+ 2358 0574 033082E0 		add	r3, r2, r3
+ 2359 0578 FF2003E2 		and	r2, r3, #255
+ 2360 057c 10301BE5 		ldr	r3, [fp, #-16]
+ 2361 0580 0220C3E5 		strb	r2, [r3, #2]
+  59:../src/rtc.c  **** 	rtc_time->min  = ((BCDMIN >> 4) * 10) + (BCDMIN & 0xF);
+ 2362              		.loc 1 59 0
+ 2363 0584 C8329FE5 		ldr	r3, .L9+24
+ 2364 0588 003093E5 		ldr	r3, [r3, #0]
+ 2365 058c 2332A0E1 		mov	r3, r3, lsr #4
+ 2366 0590 FF3003E2 		and	r3, r3, #255
+ 2367 0594 0320A0E1 		mov	r2, r3
+ 2368 0598 0221A0E1 		mov	r2, r2, asl #2
+ 2369 059c 033082E0 		add	r3, r2, r3
+ 2370 05a0 8330A0E1 		mov	r3, r3, asl #1
+ 2371 05a4 FF2003E2 		and	r2, r3, #255
+ 2372 05a8 A4329FE5 		ldr	r3, .L9+24
+ 2373 05ac 003093E5 		ldr	r3, [r3, #0]
+ 2374 05b0 FF3003E2 		and	r3, r3, #255
+ 2375 05b4 0F3003E2 		and	r3, r3, #15
+ 2376 05b8 FF3003E2 		and	r3, r3, #255
+ 2377 05bc 033082E0 		add	r3, r2, r3
+ 2378 05c0 FF2003E2 		and	r2, r3, #255
+ 2379 05c4 10301BE5 		ldr	r3, [fp, #-16]
+ 2380 05c8 0120C3E5 		strb	r2, [r3, #1]
+  60:../src/rtc.c  **** 	rtc_time->sec  = ((BCDSEC >> 4) * 10) + (BCDSEC & 0xF);
+ 2381              		.loc 1 60 0
+ 2382 05cc 84329FE5 		ldr	r3, .L9+28
+ 2383 05d0 003093E5 		ldr	r3, [r3, #0]
+ 2384 05d4 2332A0E1 		mov	r3, r3, lsr #4
+ 2385 05d8 FF3003E2 		and	r3, r3, #255
+ 2386 05dc 0320A0E1 		mov	r2, r3
+ 2387 05e0 0221A0E1 		mov	r2, r2, asl #2
+ 2388 05e4 033082E0 		add	r3, r2, r3
+ 2389 05e8 8330A0E1 		mov	r3, r3, asl #1
+ 2390 05ec FF2003E2 		and	r2, r3, #255
+ 2391 05f0 60329FE5 		ldr	r3, .L9+28
+ 2392 05f4 003093E5 		ldr	r3, [r3, #0]
+ 2393 05f8 FF3003E2 		and	r3, r3, #255
+ 2394 05fc 0F3003E2 		and	r3, r3, #15
+ 2395 0600 FF3003E2 		and	r3, r3, #255
+ 2396 0604 033082E0 		add	r3, r2, r3
+ 2397 0608 FF2003E2 		and	r2, r3, #255
+ 2398 060c 10301BE5 		ldr	r3, [fp, #-16]
+ 2399 0610 0020C3E5 		strb	r2, [r3, #0]
+  61:../src/rtc.c  **** 	if( ! rtc_time->sec ){
+ 2400              		.loc 1 61 0
+ 2401 0614 10301BE5 		ldr	r3, [fp, #-16]
+ 2402 0618 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2403 061c 000053E3 		cmp	r3, #0
+ 2404 0620 7D00001A 		bne	.L8
+  62:../src/rtc.c  **** 		rtc_time->year = ((BCDYEAR >> 4) * 10) + (BCDYEAR & 0xF);
+ 2405              		.loc 1 62 0
+ 2406 0624 14329FE5 		ldr	r3, .L9+4
+ 2407 0628 003093E5 		ldr	r3, [r3, #0]
+ 2408 062c 2332A0E1 		mov	r3, r3, lsr #4
+ 2409 0630 FF3003E2 		and	r3, r3, #255
+ 2410 0634 0320A0E1 		mov	r2, r3
+ 2411 0638 0221A0E1 		mov	r2, r2, asl #2
+ 2412 063c 033082E0 		add	r3, r2, r3
+ 2413 0640 8330A0E1 		mov	r3, r3, asl #1
+ 2414 0644 FF2003E2 		and	r2, r3, #255
+ 2415 0648 F0319FE5 		ldr	r3, .L9+4
+ 2416 064c 003093E5 		ldr	r3, [r3, #0]
+ 2417 0650 FF3003E2 		and	r3, r3, #255
+ 2418 0654 0F3003E2 		and	r3, r3, #15
+ 2419 0658 FF3003E2 		and	r3, r3, #255
+ 2420 065c 033082E0 		add	r3, r2, r3
+ 2421 0660 FF2003E2 		and	r2, r3, #255
+ 2422 0664 10301BE5 		ldr	r3, [fp, #-16]
+ 2423 0668 0620C3E5 		strb	r2, [r3, #6]
+  63:../src/rtc.c  **** 		rtc_time->mon  = ((BCDMON >> 4) * 10) + (BCDMON & 0xF);
+ 2424              		.loc 1 63 0
+ 2425 066c D0319FE5 		ldr	r3, .L9+8
+ 2426 0670 003093E5 		ldr	r3, [r3, #0]
+ 2427 0674 2332A0E1 		mov	r3, r3, lsr #4
+ 2428 0678 FF3003E2 		and	r3, r3, #255
+ 2429 067c 0320A0E1 		mov	r2, r3
+ 2430 0680 0221A0E1 		mov	r2, r2, asl #2
+ 2431 0684 033082E0 		add	r3, r2, r3
+ 2432 0688 8330A0E1 		mov	r3, r3, asl #1
+ 2433 068c FF2003E2 		and	r2, r3, #255
+ 2434 0690 AC319FE5 		ldr	r3, .L9+8
+ 2435 0694 003093E5 		ldr	r3, [r3, #0]
+ 2436 0698 FF3003E2 		and	r3, r3, #255
+ 2437 069c 0F3003E2 		and	r3, r3, #15
+ 2438 06a0 FF3003E2 		and	r3, r3, #255
+ 2439 06a4 033082E0 		add	r3, r2, r3
+ 2440 06a8 FF2003E2 		and	r2, r3, #255
+ 2441 06ac 10301BE5 		ldr	r3, [fp, #-16]
+ 2442 06b0 0520C3E5 		strb	r2, [r3, #5]
+  64:../src/rtc.c  **** 		rtc_time->mday = ((BCDDAY >> 4) * 10) + (BCDDAY & 0xF);
+ 2443              		.loc 1 64 0
+ 2444 06b4 8C319FE5 		ldr	r3, .L9+12
+ 2445 06b8 003093E5 		ldr	r3, [r3, #0]
+ 2446 06bc 2332A0E1 		mov	r3, r3, lsr #4
+ 2447 06c0 FF3003E2 		and	r3, r3, #255
+ 2448 06c4 0320A0E1 		mov	r2, r3
+ 2449 06c8 0221A0E1 		mov	r2, r2, asl #2
+ 2450 06cc 033082E0 		add	r3, r2, r3
+ 2451 06d0 8330A0E1 		mov	r3, r3, asl #1
+ 2452 06d4 FF2003E2 		and	r2, r3, #255
+ 2453 06d8 68319FE5 		ldr	r3, .L9+12
+ 2454 06dc 003093E5 		ldr	r3, [r3, #0]
+ 2455 06e0 FF3003E2 		and	r3, r3, #255
+ 2456 06e4 0F3003E2 		and	r3, r3, #15
+ 2457 06e8 FF3003E2 		and	r3, r3, #255
+ 2458 06ec 033082E0 		add	r3, r2, r3
+ 2459 06f0 FF2003E2 		and	r2, r3, #255
+ 2460 06f4 10301BE5 		ldr	r3, [fp, #-16]
+ 2461 06f8 0320C3E5 		strb	r2, [r3, #3]
+  65:../src/rtc.c  **** 		rtc_time->wday = ((BCDDATE >> 4) * 10) + (BCDDATE & 0xF);
+ 2462              		.loc 1 65 0
+ 2463 06fc 48319FE5 		ldr	r3, .L9+16
+ 2464 0700 003093E5 		ldr	r3, [r3, #0]
+ 2465 0704 2332A0E1 		mov	r3, r3, lsr #4
+ 2466 0708 FF3003E2 		and	r3, r3, #255
+ 2467 070c 0320A0E1 		mov	r2, r3
+ 2468 0710 0221A0E1 		mov	r2, r2, asl #2
+ 2469 0714 033082E0 		add	r3, r2, r3
+ 2470 0718 8330A0E1 		mov	r3, r3, asl #1
+ 2471 071c FF2003E2 		and	r2, r3, #255
+ 2472 0720 24319FE5 		ldr	r3, .L9+16
+ 2473 0724 003093E5 		ldr	r3, [r3, #0]
+ 2474 0728 FF3003E2 		and	r3, r3, #255
+ 2475 072c 0F3003E2 		and	r3, r3, #15
+ 2476 0730 FF3003E2 		and	r3, r3, #255
+ 2477 0734 033082E0 		add	r3, r2, r3
+ 2478 0738 FF2003E2 		and	r2, r3, #255
+ 2479 073c 10301BE5 		ldr	r3, [fp, #-16]
+ 2480 0740 0420C3E5 		strb	r2, [r3, #4]
+  66:../src/rtc.c  **** 		rtc_time->hour = ((BCDHOUR >> 4) * 10) + (BCDHOUR & 0xF);
+ 2481              		.loc 1 66 0
+ 2482 0744 04319FE5 		ldr	r3, .L9+20
+ 2483 0748 003093E5 		ldr	r3, [r3, #0]
+ 2484 074c 2332A0E1 		mov	r3, r3, lsr #4
+ 2485 0750 FF3003E2 		and	r3, r3, #255
+ 2486 0754 0320A0E1 		mov	r2, r3
+ 2487 0758 0221A0E1 		mov	r2, r2, asl #2
+ 2488 075c 033082E0 		add	r3, r2, r3
+ 2489 0760 8330A0E1 		mov	r3, r3, asl #1
+ 2490 0764 FF2003E2 		and	r2, r3, #255
+ 2491 0768 E0309FE5 		ldr	r3, .L9+20
+ 2492 076c 003093E5 		ldr	r3, [r3, #0]
+ 2493 0770 FF3003E2 		and	r3, r3, #255
+ 2494 0774 0F3003E2 		and	r3, r3, #15
+ 2495 0778 FF3003E2 		and	r3, r3, #255
+ 2496 077c 033082E0 		add	r3, r2, r3
+ 2497 0780 FF2003E2 		and	r2, r3, #255
+ 2498 0784 10301BE5 		ldr	r3, [fp, #-16]
+ 2499 0788 0220C3E5 		strb	r2, [r3, #2]
+  67:../src/rtc.c  **** 		rtc_time->min  = ((BCDMIN >> 4) * 10) + (BCDMIN & 0xF);
+ 2500              		.loc 1 67 0
+ 2501 078c C0309FE5 		ldr	r3, .L9+24
+ 2502 0790 003093E5 		ldr	r3, [r3, #0]
+ 2503 0794 2332A0E1 		mov	r3, r3, lsr #4
+ 2504 0798 FF3003E2 		and	r3, r3, #255
+ 2505 079c 0320A0E1 		mov	r2, r3
+ 2506 07a0 0221A0E1 		mov	r2, r2, asl #2
+ 2507 07a4 033082E0 		add	r3, r2, r3
+ 2508 07a8 8330A0E1 		mov	r3, r3, asl #1
+ 2509 07ac FF2003E2 		and	r2, r3, #255
+ 2510 07b0 9C309FE5 		ldr	r3, .L9+24
+ 2511 07b4 003093E5 		ldr	r3, [r3, #0]
+ 2512 07b8 FF3003E2 		and	r3, r3, #255
+ 2513 07bc 0F3003E2 		and	r3, r3, #15
+ 2514 07c0 FF3003E2 		and	r3, r3, #255
+ 2515 07c4 033082E0 		add	r3, r2, r3
+ 2516 07c8 FF2003E2 		and	r2, r3, #255
+ 2517 07cc 10301BE5 		ldr	r3, [fp, #-16]
+ 2518 07d0 0120C3E5 		strb	r2, [r3, #1]
+  68:../src/rtc.c  **** 		rtc_time->sec  = ((BCDSEC >> 4) * 10) + (BCDSEC & 0xF);
+ 2519              		.loc 1 68 0
+ 2520 07d4 7C309FE5 		ldr	r3, .L9+28
+ 2521 07d8 003093E5 		ldr	r3, [r3, #0]
+ 2522 07dc 2332A0E1 		mov	r3, r3, lsr #4
+ 2523 07e0 FF3003E2 		and	r3, r3, #255
+ 2524 07e4 0320A0E1 		mov	r2, r3
+ 2525 07e8 0221A0E1 		mov	r2, r2, asl #2
+ 2526 07ec 033082E0 		add	r3, r2, r3
+ 2527 07f0 8330A0E1 		mov	r3, r3, asl #1
+ 2528 07f4 FF2003E2 		and	r2, r3, #255
+ 2529 07f8 58309FE5 		ldr	r3, .L9+28
+ 2530 07fc 003093E5 		ldr	r3, [r3, #0]
+ 2531 0800 FF3003E2 		and	r3, r3, #255
+ 2532 0804 0F3003E2 		and	r3, r3, #15
+ 2533 0808 FF3003E2 		and	r3, r3, #255
+ 2534 080c 033082E0 		add	r3, r2, r3
+ 2535 0810 FF2003E2 		and	r2, r3, #255
+ 2536 0814 10301BE5 		ldr	r3, [fp, #-16]
+ 2537 0818 0020C3E5 		strb	r2, [r3, #0]
+ 2538              	.L8:
+  69:../src/rtc.c  **** 	};
+  70:../src/rtc.c  **** 
+  71:../src/rtc.c  **** 	RTCCON &= 0;
+ 2539              		.loc 1 71 0
+ 2540 081c 18309FE5 		ldr	r3, .L9
+ 2541 0820 003093E5 		ldr	r3, [r3, #0]
+ 2542 0824 10309FE5 		ldr	r3, .L9
+ 2543 0828 0020A0E3 		mov	r2, #0
+ 2544 082c 002083E5 		str	r2, [r3, #0]
+  72:../src/rtc.c  **** }
+ 2545              		.loc 1 72 0
+ 2546 0830 0CD04BE2 		sub	sp, fp, #12
+ 2547 0834 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2548 0838 1EFF2FE1 		bx	lr
+ 2549              	.L10:
+ 2550              		.align	2
+ 2551              	.L9:
+ 2552 083c 4000D701 		.word	30867520
+ 2553 0840 8800D701 		.word	30867592
+ 2554 0844 8400D701 		.word	30867588
+ 2555 0848 7C00D701 		.word	30867580
+ 2556 084c 8000D701 		.word	30867584
+ 2557 0850 7800D701 		.word	30867576
+ 2558 0854 7400D701 		.word	30867572
+ 2559 0858 7000D701 		.word	30867568
+ 2560              		.cfi_endproc
+ 2561              	.LFE2:
+ 2563              		.align	2
+ 2564              		.global	rtc_open
+ 2566              	rtc_open:
+ 2567              	.LFB3:
+  73:../src/rtc.c  **** 
+  74:../src/rtc.c  **** 
+  75:../src/rtc.c  **** void rtc_open( void (*isr)(void), uint8 tick_count )
+  76:../src/rtc.c  **** {
+ 2568              		.loc 1 76 0
+ 2569              		.cfi_startproc
+ 2570              		@ Function supports interworking.
+ 2571              		@ args = 0, pretend = 0, frame = 8
+ 2572              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2573 085c 0DC0A0E1 		mov	ip, sp
+ 2574              	.LCFI6:
+ 2575              		.cfi_def_cfa_register 12
+ 2576 0860 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2577 0864 04B04CE2 		sub	fp, ip, #4
+ 2578              		.cfi_offset 14, -8
+ 2579              		.cfi_offset 13, -12
+ 2580              		.cfi_offset 11, -16
+ 2581              	.LCFI7:
+ 2582              		.cfi_def_cfa 11, 4
+ 2583 0868 08D04DE2 		sub	sp, sp, #8
+ 2584 086c 10000BE5 		str	r0, [fp, #-16]
+ 2585 0870 0130A0E1 		mov	r3, r1
+ 2586 0874 11304BE5 		strb	r3, [fp, #-17]
+  77:../src/rtc.c  **** 	pISR_TICK = (uint32) isr;
+ 2587              		.loc 1 77 0
+ 2588 0878 48309FE5 		ldr	r3, .L12
+ 2589 087c 10201BE5 		ldr	r2, [fp, #-16]
+ 2590 0880 002083E5 		str	r2, [r3, #0]
+  78:../src/rtc.c  **** 	I_ISPC    = 1;
+ 2591              		.loc 1 78 0
+ 2592 0884 40309FE5 		ldr	r3, .L12+4
+ 2593 0888 0120A0E3 		mov	r2, #1
+ 2594 088c 002083E5 		str	r2, [r3, #0]
+  79:../src/rtc.c  **** 	INTMSK   &= ~(1 << 20);
+ 2595              		.loc 1 79 0
+ 2596 0890 38309FE5 		ldr	r3, .L12+8
+ 2597 0894 34209FE5 		ldr	r2, .L12+8
+ 2598 0898 002092E5 		ldr	r2, [r2, #0]
+ 2599 089c 0126C2E3 		bic	r2, r2, #1048576
+ 2600 08a0 002083E5 		str	r2, [r3, #0]
+  80:../src/rtc.c  **** 	TICNT     = 1 << 7 | tick_count;
+ 2601              		.loc 1 80 0
+ 2602 08a4 28209FE5 		ldr	r2, .L12+12
+ 2603 08a8 11305BE5 		ldrb	r3, [fp, #-17]
+ 2604 08ac 833CE0E1 		mvn	r3, r3, asl #25
+ 2605 08b0 A33CE0E1 		mvn	r3, r3, lsr #25
+ 2606 08b4 FF3003E2 		and	r3, r3, #255
+ 2607 08b8 003082E5 		str	r3, [r2, #0]
+  81:../src/rtc.c  **** }
+ 2608              		.loc 1 81 0
+ 2609 08bc 0CD04BE2 		sub	sp, fp, #12
+ 2610 08c0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2611 08c4 1EFF2FE1 		bx	lr
+ 2612              	.L13:
+ 2613              		.align	2
+ 2614              	.L12:
+ 2615 08c8 70FF7F0C 		.word	209715056
+ 2616 08cc 2400E001 		.word	31457316
+ 2617 08d0 0C00E001 		.word	31457292
+ 2618 08d4 8C00D701 		.word	30867596
+ 2619              		.cfi_endproc
+ 2620              	.LFE3:
+ 2622              		.align	2
+ 2623              		.global	rtc_close
+ 2625              	rtc_close:
+ 2626              	.LFB4:
+  82:../src/rtc.c  **** 
+  83:../src/rtc.c  **** void rtc_close( void )
+  84:../src/rtc.c  **** {
+ 2627              		.loc 1 84 0
+ 2628              		.cfi_startproc
+ 2629              		@ Function supports interworking.
+ 2630              		@ args = 0, pretend = 0, frame = 0
+ 2631              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2632 08d8 0DC0A0E1 		mov	ip, sp
+ 2633              	.LCFI8:
+ 2634              		.cfi_def_cfa_register 12
+ 2635 08dc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2636 08e0 04B04CE2 		sub	fp, ip, #4
+ 2637              		.cfi_offset 14, -8
+ 2638              		.cfi_offset 13, -12
+ 2639              		.cfi_offset 11, -16
+ 2640              	.LCFI9:
+ 2641              		.cfi_def_cfa 11, 4
+  85:../src/rtc.c  **** 	TICNT     = 0x7F;
+ 2642              		.loc 1 85 0
+ 2643 08e4 30309FE5 		ldr	r3, .L15
+ 2644 08e8 7F20A0E3 		mov	r2, #127
+ 2645 08ec 002083E5 		str	r2, [r3, #0]
+  86:../src/rtc.c  **** 	INTMSK   |= 1 << 20;
+ 2646              		.loc 1 86 0
+ 2647 08f0 28309FE5 		ldr	r3, .L15+4
+ 2648 08f4 24209FE5 		ldr	r2, .L15+4
+ 2649 08f8 002092E5 		ldr	r2, [r2, #0]
+ 2650 08fc 012682E3 		orr	r2, r2, #1048576
+ 2651 0900 002083E5 		str	r2, [r3, #0]
+  87:../src/rtc.c  **** 	pISR_TICK = (uint32) isr_TICK_dummy;
+ 2652              		.loc 1 87 0
+ 2653 0904 18309FE5 		ldr	r3, .L15+8
+ 2654 0908 18209FE5 		ldr	r2, .L15+12
+ 2655 090c 002083E5 		str	r2, [r3, #0]
+  88:../src/rtc.c  **** }
+ 2656              		.loc 1 88 0
+ 2657 0910 0CD04BE2 		sub	sp, fp, #12
+ 2658 0914 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2659 0918 1EFF2FE1 		bx	lr
+ 2660              	.L16:
+ 2661              		.align	2
+ 2662              	.L15:
+ 2663 091c 8C00D701 		.word	30867596
+ 2664 0920 0C00E001 		.word	31457292
+ 2665 0924 70FF7F0C 		.word	209715056
+ 2666 0928 00000000 		.word	isr_TICK_dummy
+ 2667              		.cfi_endproc
+ 2668              	.LFE4:
+ 2670              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 rtc.c
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:1911   .text:00000000 $a
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:1914   .text:00000000 rtc_init
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2012   .text:000000f8 $d
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2032   .text:0000013c $a
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2035   .text:0000013c rtc_puttime
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2227   .text:000003d0 $d
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2239   .text:000003f4 $a
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2242   .text:000003f4 rtc_gettime
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2552   .text:0000083c $d
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2563   .text:0000085c $a
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2566   .text:0000085c rtc_open
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2615   .text:000008c8 $d
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2622   .text:000008d8 $a
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2625   .text:000008d8 rtc_close
+C:\Users\Catalina\AppData\Local\Temp\cc9M1whf.s:2663   .text:0000091c $d
+                     .debug_frame:00000010 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+isr_TICK_dummy

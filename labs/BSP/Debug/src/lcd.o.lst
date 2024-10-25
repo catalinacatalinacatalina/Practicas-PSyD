@@ -11,8 +11,1127 @@
   11              		.file	"lcd.c"
   21              	.Ltext0:
   22              		.file 1 "../src/lcd.c"
- 965              	.Letext0:
+ 1704              	state:
+ 1705 0000 00       		.space	1
+ 1706              		.text
+ 1707              		.align	2
+ 1708              		.global	lcd_init
+ 1710              	lcd_init:
+ 1711              	.LFB0:
+   1:../src/lcd.c  **** 
+   2:../src/lcd.c  **** #include <s3c44b0x.h>
+   3:../src/lcd.c  **** #include <lcd.h>
+   4:../src/lcd.c  **** 
+   5:../src/lcd.c  **** extern uint8 font[];
+   6:../src/lcd.c  **** uint8 lcd_buffer[LCD_BUFFER_SIZE];
+   7:../src/lcd.c  **** 
+   8:../src/lcd.c  **** static uint8 state;
+   9:../src/lcd.c  **** 
+  10:../src/lcd.c  **** void lcd_init( void )
+  11:../src/lcd.c  **** {      
+ 1712              		.loc 1 11 0
+ 1713              		.cfi_startproc
+ 1714              		@ Function supports interworking.
+ 1715              		@ args = 0, pretend = 0, frame = 0
+ 1716              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1717 0000 0DC0A0E1 		mov	ip, sp
+ 1718              	.LCFI0:
+ 1719              		.cfi_def_cfa_register 12
+ 1720 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1721 0008 04B04CE2 		sub	fp, ip, #4
+ 1722              		.cfi_offset 14, -8
+ 1723              		.cfi_offset 13, -12
+ 1724              		.cfi_offset 11, -16
+ 1725              	.LCFI1:
+ 1726              		.cfi_def_cfa 11, 4
+  12:../src/lcd.c  ****     DITHMODE =  0x00000  ;
+ 1727              		.loc 1 12 0
+ 1728 000c FC309FE5 		ldr	r3, .L2
+ 1729 0010 0020A0E3 		mov	r2, #0
+ 1730 0014 002083E5 		str	r2, [r3, #0]
+  13:../src/lcd.c  ****     DP1_2    =   0xA5A5 ;
+ 1731              		.loc 1 13 0
+ 1732 0018 F4309FE5 		ldr	r3, .L2+4
+ 1733 001c F4209FE5 		ldr	r2, .L2+8
+ 1734 0020 002083E5 		str	r2, [r3, #0]
+  14:../src/lcd.c  ****     DP4_7    =   0xBA5DA65 ;
+ 1735              		.loc 1 14 0
+ 1736 0024 F0309FE5 		ldr	r3, .L2+12
+ 1737 0028 F0209FE5 		ldr	r2, .L2+16
+ 1738 002c 002083E5 		str	r2, [r3, #0]
+  15:../src/lcd.c  ****     DP3_5    =   0xA5A5F ;
+ 1739              		.loc 1 15 0
+ 1740 0030 EC309FE5 		ldr	r3, .L2+20
+ 1741 0034 EC209FE5 		ldr	r2, .L2+24
+ 1742 0038 002083E5 		str	r2, [r3, #0]
+  16:../src/lcd.c  ****     DP2_3    =   0xD6B ;
+ 1743              		.loc 1 16 0
+ 1744 003c E8309FE5 		ldr	r3, .L2+28
+ 1745 0040 E8209FE5 		ldr	r2, .L2+32
+ 1746 0044 002083E5 		str	r2, [r3, #0]
+  17:../src/lcd.c  ****     DP5_7    =   0xEB7B5ED ;
+ 1747              		.loc 1 17 0
+ 1748 0048 E4309FE5 		ldr	r3, .L2+36
+ 1749 004c E4209FE5 		ldr	r2, .L2+40
+ 1750 0050 002083E5 		str	r2, [r3, #0]
+  18:../src/lcd.c  ****     DP3_4    =   0x7DBE ;
+ 1751              		.loc 1 18 0
+ 1752 0054 E0309FE5 		ldr	r3, .L2+44
+ 1753 0058 E0209FE5 		ldr	r2, .L2+48
+ 1754 005c 002083E5 		str	r2, [r3, #0]
+  19:../src/lcd.c  ****     DP4_5    =   0x7EBDF ;
+ 1755              		.loc 1 19 0
+ 1756 0060 DC309FE5 		ldr	r3, .L2+52
+ 1757 0064 DC209FE5 		ldr	r2, .L2+56
+ 1758 0068 002083E5 		str	r2, [r3, #0]
+  20:../src/lcd.c  ****     DP6_7    =   0x7FDFBFE ;
+ 1759              		.loc 1 20 0
+ 1760 006c D8309FE5 		ldr	r3, .L2+60
+ 1761 0070 D8209FE5 		ldr	r2, .L2+64
+ 1762 0074 002083E5 		str	r2, [r3, #0]
+  21:../src/lcd.c  ****     
+  22:../src/lcd.c  ****     REDLUT   =   0x00000000;
+ 1763              		.loc 1 22 0
+ 1764 0078 D4309FE5 		ldr	r3, .L2+68
+ 1765 007c 0020A0E3 		mov	r2, #0
+ 1766 0080 002083E5 		str	r2, [r3, #0]
+  23:../src/lcd.c  ****     GREENLUT =   0x00000000;
+ 1767              		.loc 1 23 0
+ 1768 0084 CC309FE5 		ldr	r3, .L2+72
+ 1769 0088 0020A0E3 		mov	r2, #0
+ 1770 008c 002083E5 		str	r2, [r3, #0]
+  24:../src/lcd.c  ****     BLUELUT  =   0x0000;
+ 1771              		.loc 1 24 0
+ 1772 0090 C4309FE5 		ldr	r3, .L2+76
+ 1773 0094 0020A0E3 		mov	r2, #0
+ 1774 0098 002083E5 		str	r2, [r3, #0]
+  25:../src/lcd.c  **** 
+  26:../src/lcd.c  ****     LCDCON1  =   0x1C020;
+ 1775              		.loc 1 26 0
+ 1776 009c 1F36A0E3 		mov	r3, #32505856
+ 1777 00a0 B8209FE5 		ldr	r2, .L2+80
+ 1778 00a4 002083E5 		str	r2, [r3, #0]
+  27:../src/lcd.c  ****     LCDCON2  =   0x13CEF;
+ 1779              		.loc 1 27 0
+ 1780 00a8 B4309FE5 		ldr	r3, .L2+84
+ 1781 00ac B4209FE5 		ldr	r2, .L2+88
+ 1782 00b0 002083E5 		str	r2, [r3, #0]
+  28:../src/lcd.c  ****     LCDCON3  =  0x0;
+ 1783              		.loc 1 28 0
+ 1784 00b4 B0309FE5 		ldr	r3, .L2+92
+ 1785 00b8 0020A0E3 		mov	r2, #0
+ 1786 00bc 002083E5 		str	r2, [r3, #0]
+  29:../src/lcd.c  **** 
+  30:../src/lcd.c  ****     LCDSADDR1 = (2 << 27) | ((uint32)lcd_buffer >> 1);
+ 1787              		.loc 1 30 0
+ 1788 00c0 A8309FE5 		ldr	r3, .L2+96
+ 1789 00c4 A8209FE5 		ldr	r2, .L2+100
+ 1790 00c8 A220A0E1 		mov	r2, r2, lsr #1
+ 1791 00cc 012282E3 		orr	r2, r2, #268435456
+ 1792 00d0 002083E5 		str	r2, [r3, #0]
+  31:../src/lcd.c  ****     LCDSADDR2 = (1 << 29) | (((uint32)lcd_buffer + LCD_BUFFER_SIZE) & 0x3FFFFF) >> 1;
+ 1793              		.loc 1 31 0
+ 1794 00d4 9C209FE5 		ldr	r2, .L2+104
+ 1795 00d8 94309FE5 		ldr	r3, .L2+100
+ 1796 00dc 963C83E2 		add	r3, r3, #38400
+ 1797 00e0 FF34C3E3 		bic	r3, r3, #-16777216
+ 1798 00e4 0335C3E3 		bic	r3, r3, #12582912
+ 1799 00e8 A330A0E1 		mov	r3, r3, lsr #1
+ 1800 00ec 023283E3 		orr	r3, r3, #536870912
+ 1801 00f0 003082E5 		str	r3, [r2, #0]
+  32:../src/lcd.c  ****     LCDSADDR3 =   0x50 ;
+ 1802              		.loc 1 32 0
+ 1803 00f4 80309FE5 		ldr	r3, .L2+108
+ 1804 00f8 5020A0E3 		mov	r2, #80
+ 1805 00fc 002083E5 		str	r2, [r3, #0]
+  33:../src/lcd.c  ****     
+  34:../src/lcd.c  ****     lcd_off();
+ 1806              		.loc 1 34 0
+ 1807 0100 FEFFFFEB 		bl	lcd_off
+  35:../src/lcd.c  **** }
+ 1808              		.loc 1 35 0
+ 1809 0104 0CD04BE2 		sub	sp, fp, #12
+ 1810 0108 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1811 010c 1EFF2FE1 		bx	lr
+ 1812              	.L3:
+ 1813              		.align	2
+ 1814              	.L2:
+ 1815 0110 4400F001 		.word	32505924
+ 1816 0114 2000F001 		.word	32505888
+ 1817 0118 A5A50000 		.word	42405
+ 1818 011c 2400F001 		.word	32505892
+ 1819 0120 65DAA50B 		.word	195418725
+ 1820 0124 2800F001 		.word	32505896
+ 1821 0128 5F5A0A00 		.word	678495
+ 1822 012c 2C00F001 		.word	32505900
+ 1823 0130 6B0D0000 		.word	3435
+ 1824 0134 3000F001 		.word	32505904
+ 1825 0138 EDB5B70E 		.word	246920685
+ 1826 013c 3400F001 		.word	32505908
+ 1827 0140 BE7D0000 		.word	32190
+ 1828 0144 3800F001 		.word	32505912
+ 1829 0148 DFEB0700 		.word	519135
+ 1830 014c 3C00F001 		.word	32505916
+ 1831 0150 FEFBFD07 		.word	134085630
+ 1832 0154 1400F001 		.word	32505876
+ 1833 0158 1800F001 		.word	32505880
+ 1834 015c 1C00F001 		.word	32505884
+ 1835 0160 20C00100 		.word	114720
+ 1836 0164 0400F001 		.word	32505860
+ 1837 0168 EF3C0100 		.word	81135
+ 1838 016c 4000F001 		.word	32505920
+ 1839 0170 0800F001 		.word	32505864
+ 1840 0174 00000000 		.word	lcd_buffer
+ 1841 0178 0C00F001 		.word	32505868
+ 1842 017c 1000F001 		.word	32505872
+ 1843              		.cfi_endproc
+ 1844              	.LFE0:
+ 1846              		.align	2
+ 1847              		.global	lcd_on
+ 1849              	lcd_on:
+ 1850              	.LFB1:
+  36:../src/lcd.c  **** 
+  37:../src/lcd.c  **** void lcd_on( void )
+  38:../src/lcd.c  **** {
+ 1851              		.loc 1 38 0
+ 1852              		.cfi_startproc
+ 1853              		@ Function supports interworking.
+ 1854              		@ args = 0, pretend = 0, frame = 0
+ 1855              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1856 0180 0DC0A0E1 		mov	ip, sp
+ 1857              	.LCFI2:
+ 1858              		.cfi_def_cfa_register 12
+ 1859 0184 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1860 0188 04B04CE2 		sub	fp, ip, #4
+ 1861              		.cfi_offset 14, -8
+ 1862              		.cfi_offset 13, -12
+ 1863              		.cfi_offset 11, -16
+ 1864              	.LCFI3:
+ 1865              		.cfi_def_cfa 11, 4
+  39:../src/lcd.c  **** 
+  40:../src/lcd.c  **** }
+ 1866              		.loc 1 40 0
+ 1867 018c 0CD04BE2 		sub	sp, fp, #12
+ 1868 0190 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1869 0194 1EFF2FE1 		bx	lr
+ 1870              		.cfi_endproc
+ 1871              	.LFE1:
+ 1873              		.align	2
+ 1874              		.global	lcd_off
+ 1876              	lcd_off:
+ 1877              	.LFB2:
+  41:../src/lcd.c  **** 
+  42:../src/lcd.c  **** void lcd_off( void )
+  43:../src/lcd.c  **** {
+ 1878              		.loc 1 43 0
+ 1879              		.cfi_startproc
+ 1880              		@ Function supports interworking.
+ 1881              		@ args = 0, pretend = 0, frame = 0
+ 1882              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1883 0198 0DC0A0E1 		mov	ip, sp
+ 1884              	.LCFI4:
+ 1885              		.cfi_def_cfa_register 12
+ 1886 019c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1887 01a0 04B04CE2 		sub	fp, ip, #4
+ 1888              		.cfi_offset 14, -8
+ 1889              		.cfi_offset 13, -12
+ 1890              		.cfi_offset 11, -16
+ 1891              	.LCFI5:
+ 1892              		.cfi_def_cfa 11, 4
+  44:../src/lcd.c  **** 
+  45:../src/lcd.c  **** }
+ 1893              		.loc 1 45 0
+ 1894 01a4 0CD04BE2 		sub	sp, fp, #12
+ 1895 01a8 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1896 01ac 1EFF2FE1 		bx	lr
+ 1897              		.cfi_endproc
+ 1898              	.LFE2:
+ 1900              		.align	2
+ 1901              		.global	lcd_status
+ 1903              	lcd_status:
+ 1904              	.LFB3:
+  46:../src/lcd.c  **** 
+  47:../src/lcd.c  **** uint8 lcd_status( void )
+  48:../src/lcd.c  **** {
+ 1905              		.loc 1 48 0
+ 1906              		.cfi_startproc
+ 1907              		@ Function supports interworking.
+ 1908              		@ args = 0, pretend = 0, frame = 8
+ 1909              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1910 01b0 0DC0A0E1 		mov	ip, sp
+ 1911              	.LCFI6:
+ 1912              		.cfi_def_cfa_register 12
+ 1913 01b4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1914 01b8 04B04CE2 		sub	fp, ip, #4
+ 1915              		.cfi_offset 14, -8
+ 1916              		.cfi_offset 13, -12
+ 1917              		.cfi_offset 11, -16
+ 1918              	.LCFI7:
+ 1919              		.cfi_def_cfa 11, 4
+ 1920 01bc 08D04DE2 		sub	sp, sp, #8
+  49:../src/lcd.c  **** 	uint8 c;
+  50:../src/lcd.c  ****     return c;
+ 1921              		.loc 1 50 0
+ 1922 01c0 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+  51:../src/lcd.c  **** }
+ 1923              		.loc 1 51 0
+ 1924 01c4 0300A0E1 		mov	r0, r3
+ 1925 01c8 0CD04BE2 		sub	sp, fp, #12
+ 1926 01cc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1927 01d0 1EFF2FE1 		bx	lr
+ 1928              		.cfi_endproc
+ 1929              	.LFE3:
+ 1931              		.align	2
+ 1932              		.global	lcd_clear
+ 1934              	lcd_clear:
+ 1935              	.LFB4:
+  52:../src/lcd.c  **** 
+  53:../src/lcd.c  **** void lcd_clear( void )
+  54:../src/lcd.c  **** {
+ 1936              		.loc 1 54 0
+ 1937              		.cfi_startproc
+ 1938              		@ Function supports interworking.
+ 1939              		@ args = 0, pretend = 0, frame = 0
+ 1940              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1941 01d4 0DC0A0E1 		mov	ip, sp
+ 1942              	.LCFI8:
+ 1943              		.cfi_def_cfa_register 12
+ 1944 01d8 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1945 01dc 04B04CE2 		sub	fp, ip, #4
+ 1946              		.cfi_offset 14, -8
+ 1947              		.cfi_offset 13, -12
+ 1948              		.cfi_offset 11, -16
+ 1949              	.LCFI9:
+ 1950              		.cfi_def_cfa 11, 4
+  55:../src/lcd.c  **** 
+  56:../src/lcd.c  **** }
+ 1951              		.loc 1 56 0
+ 1952 01e0 0CD04BE2 		sub	sp, fp, #12
+ 1953 01e4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 1954 01e8 1EFF2FE1 		bx	lr
+ 1955              		.cfi_endproc
+ 1956              	.LFE4:
+ 1958              		.align	2
+ 1959              		.global	lcd_putpixel
+ 1961              	lcd_putpixel:
+ 1962              	.LFB5:
+  57:../src/lcd.c  **** 
+  58:../src/lcd.c  **** void lcd_putpixel( uint16 x, uint16 y, uint8 c)
+  59:../src/lcd.c  **** {
+ 1963              		.loc 1 59 0
+ 1964              		.cfi_startproc
+ 1965              		@ Function supports interworking.
+ 1966              		@ args = 0, pretend = 0, frame = 16
+ 1967              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1968 01ec 0DC0A0E1 		mov	ip, sp
+ 1969              	.LCFI10:
+ 1970              		.cfi_def_cfa_register 12
+ 1971 01f0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 1972 01f4 04B04CE2 		sub	fp, ip, #4
+ 1973              		.cfi_offset 14, -8
+ 1974              		.cfi_offset 13, -12
+ 1975              		.cfi_offset 11, -16
+ 1976              	.LCFI11:
+ 1977              		.cfi_def_cfa 11, 4
+ 1978 01f8 10D04DE2 		sub	sp, sp, #16
+ 1979 01fc 0230A0E1 		mov	r3, r2
+ 1980 0200 B6014BE1 		strh	r0, [fp, #-22]	@ movhi
+ 1981 0204 B8114BE1 		strh	r1, [fp, #-24]	@ movhi
+ 1982 0208 19304BE5 		strb	r3, [fp, #-25]
+  60:../src/lcd.c  ****     uint8 byte, bit;
+  61:../src/lcd.c  ****     uint16 i;
+  62:../src/lcd.c  **** 
+  63:../src/lcd.c  ****     i = x/2 + y*(LCD_WIDTH/2);
+ 1983              		.loc 1 63 0
+ 1984 020c B6315BE1 		ldrh	r3, [fp, #-22]
+ 1985 0210 A330A0E1 		mov	r3, r3, lsr #1
+ 1986 0214 0338A0E1 		mov	r3, r3, asl #16
+ 1987 0218 2328A0E1 		mov	r2, r3, lsr #16
+ 1988 021c B8315BE1 		ldrh	r3, [fp, #-24]	@ movhi
+ 1989 0220 0310A0E1 		mov	r1, r3	@ movhi
+ 1990 0224 0111A0E1 		mov	r1, r1, asl #2
+ 1991 0228 033081E0 		add	r3, r1, r3
+ 1992 022c 8332A0E1 		mov	r3, r3, asl #5
+ 1993 0230 0338A0E1 		mov	r3, r3, asl #16
+ 1994 0234 2338A0E1 		mov	r3, r3, lsr #16
+ 1995 0238 033082E0 		add	r3, r2, r3
+ 1996 023c BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+  64:../src/lcd.c  ****     bit = (1-x%2)*4;
+ 1997              		.loc 1 64 0
+ 1998 0240 B6315BE1 		ldrh	r3, [fp, #-22]
+ 1999 0244 013003E2 		and	r3, r3, #1
+ 2000 0248 000053E3 		cmp	r3, #0
+ 2001 024c 0100001A 		bne	.L9
+ 2002              		.loc 1 64 0 is_stmt 0 discriminator 1
+ 2003 0250 0430A0E3 		mov	r3, #4
+ 2004 0254 000000EA 		b	.L10
+ 2005              	.L9:
+ 2006              		.loc 1 64 0 discriminator 2
+ 2007 0258 0030A0E3 		mov	r3, #0
+ 2008              	.L10:
+ 2009              		.loc 1 64 0 discriminator 3
+ 2010 025c 0F304BE5 		strb	r3, [fp, #-15]
+  65:../src/lcd.c  ****     
+  66:../src/lcd.c  ****     byte = lcd_buffer[i];
+ 2011              		.loc 1 66 0 is_stmt 1 discriminator 3
+ 2012 0260 BE305BE1 		ldrh	r3, [fp, #-14]
+ 2013 0264 68209FE5 		ldr	r2, .L11
+ 2014 0268 0330D2E7 		ldrb	r3, [r2, r3]
+ 2015 026c 10304BE5 		strb	r3, [fp, #-16]
+  67:../src/lcd.c  ****     byte &= ~(0xF << bit);
+ 2016              		.loc 1 67 0 discriminator 3
+ 2017 0270 0F305BE5 		ldrb	r3, [fp, #-15]	@ zero_extendqisi2
+ 2018 0274 0F20A0E3 		mov	r2, #15
+ 2019 0278 1233A0E1 		mov	r3, r2, asl r3
+ 2020 027c FF3003E2 		and	r3, r3, #255
+ 2021 0280 0330E0E1 		mvn	r3, r3
+ 2022 0284 FF2003E2 		and	r2, r3, #255
+ 2023 0288 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 2024 028c 033002E0 		and	r3, r2, r3
+ 2025 0290 FF3003E2 		and	r3, r3, #255
+ 2026 0294 10304BE5 		strb	r3, [fp, #-16]
+  68:../src/lcd.c  ****     byte |= c << bit;
+ 2027              		.loc 1 68 0 discriminator 3
+ 2028 0298 19205BE5 		ldrb	r2, [fp, #-25]	@ zero_extendqisi2
+ 2029 029c 0F305BE5 		ldrb	r3, [fp, #-15]	@ zero_extendqisi2
+ 2030 02a0 1233A0E1 		mov	r3, r2, asl r3
+ 2031 02a4 FF2003E2 		and	r2, r3, #255
+ 2032 02a8 10305BE5 		ldrb	r3, [fp, #-16]	@ zero_extendqisi2
+ 2033 02ac 033082E1 		orr	r3, r2, r3
+ 2034 02b0 FF3003E2 		and	r3, r3, #255
+ 2035 02b4 10304BE5 		strb	r3, [fp, #-16]
+  69:../src/lcd.c  ****     lcd_buffer[i] = byte;
+ 2036              		.loc 1 69 0 discriminator 3
+ 2037 02b8 BE305BE1 		ldrh	r3, [fp, #-14]
+ 2038 02bc 10209FE5 		ldr	r2, .L11
+ 2039 02c0 10105BE5 		ldrb	r1, [fp, #-16]
+ 2040 02c4 0310C2E7 		strb	r1, [r2, r3]
+  70:../src/lcd.c  **** }
+ 2041              		.loc 1 70 0 discriminator 3
+ 2042 02c8 0CD04BE2 		sub	sp, fp, #12
+ 2043 02cc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2044 02d0 1EFF2FE1 		bx	lr
+ 2045              	.L12:
+ 2046              		.align	2
+ 2047              	.L11:
+ 2048 02d4 00000000 		.word	lcd_buffer
+ 2049              		.cfi_endproc
+ 2050              	.LFE5:
+ 2052              		.align	2
+ 2053              		.global	lcd_getpixel
+ 2055              	lcd_getpixel:
+ 2056              	.LFB6:
+  71:../src/lcd.c  **** 
+  72:../src/lcd.c  **** uint8 lcd_getpixel( uint16 x, uint16 y )
+  73:../src/lcd.c  **** {
+ 2057              		.loc 1 73 0
+ 2058              		.cfi_startproc
+ 2059              		@ Function supports interworking.
+ 2060              		@ args = 0, pretend = 0, frame = 8
+ 2061              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2062 02d8 0DC0A0E1 		mov	ip, sp
+ 2063              	.LCFI12:
+ 2064              		.cfi_def_cfa_register 12
+ 2065 02dc 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2066 02e0 04B04CE2 		sub	fp, ip, #4
+ 2067              		.cfi_offset 14, -8
+ 2068              		.cfi_offset 13, -12
+ 2069              		.cfi_offset 11, -16
+ 2070              	.LCFI13:
+ 2071              		.cfi_def_cfa 11, 4
+ 2072 02e4 08D04DE2 		sub	sp, sp, #8
+ 2073 02e8 0020A0E1 		mov	r2, r0
+ 2074 02ec 0130A0E1 		mov	r3, r1
+ 2075 02f0 BE204BE1 		strh	r2, [fp, #-14]	@ movhi
+ 2076 02f4 B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+  74:../src/lcd.c  ****      //return lcd_buffer[];
+  75:../src/lcd.c  **** }
+ 2077              		.loc 1 75 0
+ 2078 02f8 0300A0E1 		mov	r0, r3
+ 2079 02fc 0CD04BE2 		sub	sp, fp, #12
+ 2080 0300 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2081 0304 1EFF2FE1 		bx	lr
+ 2082              		.cfi_endproc
+ 2083              	.LFE6:
+ 2085              		.align	2
+ 2086              		.global	lcd_draw_hrow
+ 2088              	lcd_draw_hrow:
+ 2089              	.LFB7:
+  76:../src/lcd.c  **** 
+  77:../src/lcd.c  **** void lcd_draw_hrow( uint16 xleft, uint16 xright, uint16 y, uint8 color, uint16 width )
+  78:../src/lcd.c  **** {
+ 2090              		.loc 1 78 0
+ 2091              		.cfi_startproc
+ 2092              		@ Function supports interworking.
+ 2093              		@ args = 4, pretend = 0, frame = 8
+ 2094              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2095 0308 0DC0A0E1 		mov	ip, sp
+ 2096              	.LCFI14:
+ 2097              		.cfi_def_cfa_register 12
+ 2098 030c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2099 0310 04B04CE2 		sub	fp, ip, #4
+ 2100              		.cfi_offset 14, -8
+ 2101              		.cfi_offset 13, -12
+ 2102              		.cfi_offset 11, -16
+ 2103              	.LCFI15:
+ 2104              		.cfi_def_cfa 11, 4
+ 2105 0314 08D04DE2 		sub	sp, sp, #8
+ 2106 0318 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2107 031c B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2108 0320 B2214BE1 		strh	r2, [fp, #-18]	@ movhi
+ 2109 0324 13304BE5 		strb	r3, [fp, #-19]
+  79:../src/lcd.c  **** 
+  80:../src/lcd.c  **** }
+ 2110              		.loc 1 80 0
+ 2111 0328 0CD04BE2 		sub	sp, fp, #12
+ 2112 032c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2113 0330 1EFF2FE1 		bx	lr
+ 2114              		.cfi_endproc
+ 2115              	.LFE7:
+ 2117              		.align	2
+ 2118              		.global	lcd_draw_vrow
+ 2120              	lcd_draw_vrow:
+ 2121              	.LFB8:
+  81:../src/lcd.c  **** 
+  82:../src/lcd.c  **** void lcd_draw_vrow( uint16 yup, uint16 ydown, uint16 x, uint8 color, uint16 width )
+  83:../src/lcd.c  **** {
+ 2122              		.loc 1 83 0
+ 2123              		.cfi_startproc
+ 2124              		@ Function supports interworking.
+ 2125              		@ args = 4, pretend = 0, frame = 8
+ 2126              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2127 0334 0DC0A0E1 		mov	ip, sp
+ 2128              	.LCFI16:
+ 2129              		.cfi_def_cfa_register 12
+ 2130 0338 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2131 033c 04B04CE2 		sub	fp, ip, #4
+ 2132              		.cfi_offset 14, -8
+ 2133              		.cfi_offset 13, -12
+ 2134              		.cfi_offset 11, -16
+ 2135              	.LCFI17:
+ 2136              		.cfi_def_cfa 11, 4
+ 2137 0340 08D04DE2 		sub	sp, sp, #8
+ 2138 0344 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2139 0348 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2140 034c B2214BE1 		strh	r2, [fp, #-18]	@ movhi
+ 2141 0350 13304BE5 		strb	r3, [fp, #-19]
+  84:../src/lcd.c  **** 
+  85:../src/lcd.c  **** }
+ 2142              		.loc 1 85 0
+ 2143 0354 0CD04BE2 		sub	sp, fp, #12
+ 2144 0358 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2145 035c 1EFF2FE1 		bx	lr
+ 2146              		.cfi_endproc
+ 2147              	.LFE8:
+ 2149              		.align	2
+ 2150              		.global	lcd_draw_box
+ 2152              	lcd_draw_box:
+ 2153              	.LFB9:
+  86:../src/lcd.c  **** 
+  87:../src/lcd.c  **** void lcd_draw_box( uint16 xleft, uint16 yup, uint16 xright, uint16 ydown, uint8 color, uint16 width
+  88:../src/lcd.c  **** {
+ 2154              		.loc 1 88 0
+ 2155              		.cfi_startproc
+ 2156              		@ Function supports interworking.
+ 2157              		@ args = 8, pretend = 0, frame = 8
+ 2158              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2159 0360 0DC0A0E1 		mov	ip, sp
+ 2160              	.LCFI18:
+ 2161              		.cfi_def_cfa_register 12
+ 2162 0364 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2163 0368 04B04CE2 		sub	fp, ip, #4
+ 2164              		.cfi_offset 14, -8
+ 2165              		.cfi_offset 13, -12
+ 2166              		.cfi_offset 11, -16
+ 2167              	.LCFI19:
+ 2168              		.cfi_def_cfa 11, 4
+ 2169 036c 08D04DE2 		sub	sp, sp, #8
+ 2170 0370 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2171 0374 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2172 0378 B2214BE1 		strh	r2, [fp, #-18]	@ movhi
+ 2173 037c B4314BE1 		strh	r3, [fp, #-20]	@ movhi
+  89:../src/lcd.c  **** 
+  90:../src/lcd.c  **** }
+ 2174              		.loc 1 90 0
+ 2175 0380 0CD04BE2 		sub	sp, fp, #12
+ 2176 0384 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2177 0388 1EFF2FE1 		bx	lr
+ 2178              		.cfi_endproc
+ 2179              	.LFE9:
+ 2181              		.align	2
+ 2182              		.global	lcd_putchar
+ 2184              	lcd_putchar:
+ 2185              	.LFB10:
+  91:../src/lcd.c  **** 
+  92:../src/lcd.c  **** void lcd_putchar( uint16 x, uint16 y, uint8 color, char ch )
+  93:../src/lcd.c  **** {
+ 2186              		.loc 1 93 0
+ 2187              		.cfi_startproc
+ 2188              		@ Function supports interworking.
+ 2189              		@ args = 0, pretend = 0, frame = 16
+ 2190              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2191 038c 0DC0A0E1 		mov	ip, sp
+ 2192              	.LCFI20:
+ 2193              		.cfi_def_cfa_register 12
+ 2194 0390 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2195 0394 04B04CE2 		sub	fp, ip, #4
+ 2196              		.cfi_offset 14, -8
+ 2197              		.cfi_offset 13, -12
+ 2198              		.cfi_offset 11, -16
+ 2199              	.LCFI21:
+ 2200              		.cfi_def_cfa 11, 4
+ 2201 0398 10D04DE2 		sub	sp, sp, #16
+ 2202 039c B6014BE1 		strh	r0, [fp, #-22]	@ movhi
+ 2203 03a0 B8114BE1 		strh	r1, [fp, #-24]	@ movhi
+ 2204 03a4 19204BE5 		strb	r2, [fp, #-25]
+ 2205 03a8 1A304BE5 		strb	r3, [fp, #-26]
+  94:../src/lcd.c  ****     uint8 row, col;
+  95:../src/lcd.c  ****     uint8 *bitmap;
+  96:../src/lcd.c  **** 
+  97:../src/lcd.c  ****     bitmap = font + ch*16;
+ 2206              		.loc 1 97 0
+ 2207 03ac 1A305BE5 		ldrb	r3, [fp, #-26]	@ zero_extendqisi2
+ 2208 03b0 0332A0E1 		mov	r3, r3, asl #4
+ 2209 03b4 0320A0E1 		mov	r2, r3
+ 2210 03b8 1C319FE5 		ldr	r3, .L24
+ 2211 03bc 033082E0 		add	r3, r2, r3
+ 2212 03c0 14300BE5 		str	r3, [fp, #-20]
+  98:../src/lcd.c  ****     for( row=0; row<16; row++ )
+ 2213              		.loc 1 98 0
+ 2214 03c4 0030A0E3 		mov	r3, #0
+ 2215 03c8 0D304BE5 		strb	r3, [fp, #-13]
+ 2216 03cc 3C0000EA 		b	.L18
+ 2217              	.L23:
+  99:../src/lcd.c  ****         for( col=0; col<8; col++ )                    
+ 2218              		.loc 1 99 0
+ 2219 03d0 0030A0E3 		mov	r3, #0
+ 2220 03d4 0E304BE5 		strb	r3, [fp, #-14]
+ 2221 03d8 330000EA 		b	.L19
+ 2222              	.L22:
+ 100:../src/lcd.c  ****             if( bitmap[row] & (0x80 >> col) )
+ 2223              		.loc 1 100 0
+ 2224 03dc 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2225 03e0 14201BE5 		ldr	r2, [fp, #-20]
+ 2226 03e4 033082E0 		add	r3, r2, r3
+ 2227 03e8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2228 03ec 0320A0E1 		mov	r2, r3
+ 2229 03f0 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2230 03f4 8010A0E3 		mov	r1, #128
+ 2231 03f8 5133A0E1 		mov	r3, r1, asr r3
+ 2232 03fc 033002E0 		and	r3, r2, r3
+ 2233 0400 000053E3 		cmp	r3, #0
+ 2234 0404 1300000A 		beq	.L20
+ 101:../src/lcd.c  ****                 lcd_putpixel( x+col, y+row, color );
+ 2235              		.loc 1 101 0
+ 2236 0408 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2237 040c 0338A0E1 		mov	r3, r3, asl #16
+ 2238 0410 2328A0E1 		mov	r2, r3, lsr #16
+ 2239 0414 B6315BE1 		ldrh	r3, [fp, #-22]	@ movhi
+ 2240 0418 033082E0 		add	r3, r2, r3
+ 2241 041c 0338A0E1 		mov	r3, r3, asl #16
+ 2242 0420 2318A0E1 		mov	r1, r3, lsr #16
+ 2243 0424 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2244 0428 0338A0E1 		mov	r3, r3, asl #16
+ 2245 042c 2328A0E1 		mov	r2, r3, lsr #16
+ 2246 0430 B8315BE1 		ldrh	r3, [fp, #-24]	@ movhi
+ 2247 0434 033082E0 		add	r3, r2, r3
+ 2248 0438 0338A0E1 		mov	r3, r3, asl #16
+ 2249 043c 2328A0E1 		mov	r2, r3, lsr #16
+ 2250 0440 19305BE5 		ldrb	r3, [fp, #-25]	@ zero_extendqisi2
+ 2251 0444 0100A0E1 		mov	r0, r1
+ 2252 0448 0210A0E1 		mov	r1, r2
+ 2253 044c 0320A0E1 		mov	r2, r3
+ 2254 0450 FEFFFFEB 		bl	lcd_putpixel
+ 2255 0454 110000EA 		b	.L21
+ 2256              	.L20:
+ 102:../src/lcd.c  ****             else
+ 103:../src/lcd.c  ****                 lcd_putpixel( x+col, y+row, WHITE );
+ 2257              		.loc 1 103 0
+ 2258 0458 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2259 045c 0338A0E1 		mov	r3, r3, asl #16
+ 2260 0460 2328A0E1 		mov	r2, r3, lsr #16
+ 2261 0464 B6315BE1 		ldrh	r3, [fp, #-22]	@ movhi
+ 2262 0468 033082E0 		add	r3, r2, r3
+ 2263 046c 0338A0E1 		mov	r3, r3, asl #16
+ 2264 0470 2328A0E1 		mov	r2, r3, lsr #16
+ 2265 0474 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2266 0478 0338A0E1 		mov	r3, r3, asl #16
+ 2267 047c 2318A0E1 		mov	r1, r3, lsr #16
+ 2268 0480 B8315BE1 		ldrh	r3, [fp, #-24]	@ movhi
+ 2269 0484 033081E0 		add	r3, r1, r3
+ 2270 0488 0338A0E1 		mov	r3, r3, asl #16
+ 2271 048c 2338A0E1 		mov	r3, r3, lsr #16
+ 2272 0490 0200A0E1 		mov	r0, r2
+ 2273 0494 0310A0E1 		mov	r1, r3
+ 2274 0498 0020A0E3 		mov	r2, #0
+ 2275 049c FEFFFFEB 		bl	lcd_putpixel
+ 2276              	.L21:
+  99:../src/lcd.c  ****         for( col=0; col<8; col++ )                    
+ 2277              		.loc 1 99 0
+ 2278 04a0 0E305BE5 		ldrb	r3, [fp, #-14]
+ 2279 04a4 013083E2 		add	r3, r3, #1
+ 2280 04a8 0E304BE5 		strb	r3, [fp, #-14]
+ 2281              	.L19:
+  99:../src/lcd.c  ****         for( col=0; col<8; col++ )                    
+ 2282              		.loc 1 99 0 is_stmt 0 discriminator 1
+ 2283 04ac 0E305BE5 		ldrb	r3, [fp, #-14]	@ zero_extendqisi2
+ 2284 04b0 070053E3 		cmp	r3, #7
+ 2285 04b4 C8FFFF9A 		bls	.L22
+  98:../src/lcd.c  ****     for( row=0; row<16; row++ )
+ 2286              		.loc 1 98 0 is_stmt 1
+ 2287 04b8 0D305BE5 		ldrb	r3, [fp, #-13]
+ 2288 04bc 013083E2 		add	r3, r3, #1
+ 2289 04c0 0D304BE5 		strb	r3, [fp, #-13]
+ 2290              	.L18:
+  98:../src/lcd.c  ****     for( row=0; row<16; row++ )
+ 2291              		.loc 1 98 0 is_stmt 0 discriminator 1
+ 2292 04c4 0D305BE5 		ldrb	r3, [fp, #-13]	@ zero_extendqisi2
+ 2293 04c8 0F0053E3 		cmp	r3, #15
+ 2294 04cc BFFFFF9A 		bls	.L23
+ 104:../src/lcd.c  **** }
+ 2295              		.loc 1 104 0 is_stmt 1
+ 2296 04d0 0CD04BE2 		sub	sp, fp, #12
+ 2297 04d4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2298 04d8 1EFF2FE1 		bx	lr
+ 2299              	.L25:
+ 2300              		.align	2
+ 2301              	.L24:
+ 2302 04dc 00000000 		.word	font
+ 2303              		.cfi_endproc
+ 2304              	.LFE10:
+ 2306              		.align	2
+ 2307              		.global	lcd_puts
+ 2309              	lcd_puts:
+ 2310              	.LFB11:
+ 105:../src/lcd.c  **** 
+ 106:../src/lcd.c  **** void lcd_puts( uint16 x, uint16 y, uint8 color, char *s )
+ 107:../src/lcd.c  **** {
+ 2311              		.loc 1 107 0
+ 2312              		.cfi_startproc
+ 2313              		@ Function supports interworking.
+ 2314              		@ args = 0, pretend = 0, frame = 16
+ 2315              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2316 04e0 0DC0A0E1 		mov	ip, sp
+ 2317              	.LCFI22:
+ 2318              		.cfi_def_cfa_register 12
+ 2319 04e4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2320 04e8 04B04CE2 		sub	fp, ip, #4
+ 2321              		.cfi_offset 14, -8
+ 2322              		.cfi_offset 13, -12
+ 2323              		.cfi_offset 11, -16
+ 2324              	.LCFI23:
+ 2325              		.cfi_def_cfa 11, 4
+ 2326 04ec 10D04DE2 		sub	sp, sp, #16
+ 2327 04f0 18300BE5 		str	r3, [fp, #-24]
+ 2328 04f4 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2329 04f8 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2330 04fc 0230A0E1 		mov	r3, r2
+ 2331 0500 11304BE5 		strb	r3, [fp, #-17]
+ 108:../src/lcd.c  **** 
+ 109:../src/lcd.c  **** }
+ 2332              		.loc 1 109 0
+ 2333 0504 0CD04BE2 		sub	sp, fp, #12
+ 2334 0508 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2335 050c 1EFF2FE1 		bx	lr
+ 2336              		.cfi_endproc
+ 2337              	.LFE11:
+ 2339              		.align	2
+ 2340              		.global	lcd_putint
+ 2342              	lcd_putint:
+ 2343              	.LFB12:
+ 110:../src/lcd.c  **** 
+ 111:../src/lcd.c  **** void lcd_putint( uint16 x, uint16 y, uint8 color, int32 i )
+ 112:../src/lcd.c  **** {
+ 2344              		.loc 1 112 0
+ 2345              		.cfi_startproc
+ 2346              		@ Function supports interworking.
+ 2347              		@ args = 0, pretend = 0, frame = 16
+ 2348              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2349 0510 0DC0A0E1 		mov	ip, sp
+ 2350              	.LCFI24:
+ 2351              		.cfi_def_cfa_register 12
+ 2352 0514 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2353 0518 04B04CE2 		sub	fp, ip, #4
+ 2354              		.cfi_offset 14, -8
+ 2355              		.cfi_offset 13, -12
+ 2356              		.cfi_offset 11, -16
+ 2357              	.LCFI25:
+ 2358              		.cfi_def_cfa 11, 4
+ 2359 051c 10D04DE2 		sub	sp, sp, #16
+ 2360 0520 18300BE5 		str	r3, [fp, #-24]
+ 2361 0524 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2362 0528 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2363 052c 0230A0E1 		mov	r3, r2
+ 2364 0530 11304BE5 		strb	r3, [fp, #-17]
+ 113:../src/lcd.c  **** 
+ 114:../src/lcd.c  **** }
+ 2365              		.loc 1 114 0
+ 2366 0534 0CD04BE2 		sub	sp, fp, #12
+ 2367 0538 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2368 053c 1EFF2FE1 		bx	lr
+ 2369              		.cfi_endproc
+ 2370              	.LFE12:
+ 2372              		.align	2
+ 2373              		.global	lcd_puthex
+ 2375              	lcd_puthex:
+ 2376              	.LFB13:
+ 115:../src/lcd.c  **** 
+ 116:../src/lcd.c  **** void lcd_puthex( uint16 x, uint16 y, uint8 color, uint32 i )
+ 117:../src/lcd.c  **** {
+ 2377              		.loc 1 117 0
+ 2378              		.cfi_startproc
+ 2379              		@ Function supports interworking.
+ 2380              		@ args = 0, pretend = 0, frame = 16
+ 2381              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2382 0540 0DC0A0E1 		mov	ip, sp
+ 2383              	.LCFI26:
+ 2384              		.cfi_def_cfa_register 12
+ 2385 0544 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2386 0548 04B04CE2 		sub	fp, ip, #4
+ 2387              		.cfi_offset 14, -8
+ 2388              		.cfi_offset 13, -12
+ 2389              		.cfi_offset 11, -16
+ 2390              	.LCFI27:
+ 2391              		.cfi_def_cfa 11, 4
+ 2392 054c 10D04DE2 		sub	sp, sp, #16
+ 2393 0550 18300BE5 		str	r3, [fp, #-24]
+ 2394 0554 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2395 0558 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2396 055c 0230A0E1 		mov	r3, r2
+ 2397 0560 11304BE5 		strb	r3, [fp, #-17]
+ 118:../src/lcd.c  **** 
+ 119:../src/lcd.c  **** }
+ 2398              		.loc 1 119 0
+ 2399 0564 0CD04BE2 		sub	sp, fp, #12
+ 2400 0568 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2401 056c 1EFF2FE1 		bx	lr
+ 2402              		.cfi_endproc
+ 2403              	.LFE13:
+ 2405              		.align	2
+ 2406              		.global	lcd_putchar_x2
+ 2408              	lcd_putchar_x2:
+ 2409              	.LFB14:
+ 120:../src/lcd.c  **** 
+ 121:../src/lcd.c  **** void lcd_putchar_x2( uint16 x, uint16 y, uint8 color, char ch )
+ 122:../src/lcd.c  **** {
+ 2410              		.loc 1 122 0
+ 2411              		.cfi_startproc
+ 2412              		@ Function supports interworking.
+ 2413              		@ args = 0, pretend = 0, frame = 8
+ 2414              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2415 0570 0DC0A0E1 		mov	ip, sp
+ 2416              	.LCFI28:
+ 2417              		.cfi_def_cfa_register 12
+ 2418 0574 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2419 0578 04B04CE2 		sub	fp, ip, #4
+ 2420              		.cfi_offset 14, -8
+ 2421              		.cfi_offset 13, -12
+ 2422              		.cfi_offset 11, -16
+ 2423              	.LCFI29:
+ 2424              		.cfi_def_cfa 11, 4
+ 2425 057c 08D04DE2 		sub	sp, sp, #8
+ 2426 0580 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2427 0584 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2428 0588 11204BE5 		strb	r2, [fp, #-17]
+ 2429 058c 12304BE5 		strb	r3, [fp, #-18]
+ 123:../src/lcd.c  **** 
+ 124:../src/lcd.c  **** }
+ 2430              		.loc 1 124 0
+ 2431 0590 0CD04BE2 		sub	sp, fp, #12
+ 2432 0594 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2433 0598 1EFF2FE1 		bx	lr
+ 2434              		.cfi_endproc
+ 2435              	.LFE14:
+ 2437              		.align	2
+ 2438              		.global	lcd_puts_x2
+ 2440              	lcd_puts_x2:
+ 2441              	.LFB15:
+ 125:../src/lcd.c  **** 
+ 126:../src/lcd.c  **** void lcd_puts_x2( uint16 x, uint16 y, uint8 color, char *s )
+ 127:../src/lcd.c  **** {
+ 2442              		.loc 1 127 0
+ 2443              		.cfi_startproc
+ 2444              		@ Function supports interworking.
+ 2445              		@ args = 0, pretend = 0, frame = 16
+ 2446              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2447 059c 0DC0A0E1 		mov	ip, sp
+ 2448              	.LCFI30:
+ 2449              		.cfi_def_cfa_register 12
+ 2450 05a0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2451 05a4 04B04CE2 		sub	fp, ip, #4
+ 2452              		.cfi_offset 14, -8
+ 2453              		.cfi_offset 13, -12
+ 2454              		.cfi_offset 11, -16
+ 2455              	.LCFI31:
+ 2456              		.cfi_def_cfa 11, 4
+ 2457 05a8 10D04DE2 		sub	sp, sp, #16
+ 2458 05ac 18300BE5 		str	r3, [fp, #-24]
+ 2459 05b0 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2460 05b4 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2461 05b8 0230A0E1 		mov	r3, r2
+ 2462 05bc 11304BE5 		strb	r3, [fp, #-17]
+ 128:../src/lcd.c  **** 
+ 129:../src/lcd.c  **** }
+ 2463              		.loc 1 129 0
+ 2464 05c0 0CD04BE2 		sub	sp, fp, #12
+ 2465 05c4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2466 05c8 1EFF2FE1 		bx	lr
+ 2467              		.cfi_endproc
+ 2468              	.LFE15:
+ 2470              		.align	2
+ 2471              		.global	lcd_putint_x2
+ 2473              	lcd_putint_x2:
+ 2474              	.LFB16:
+ 130:../src/lcd.c  **** 
+ 131:../src/lcd.c  **** void lcd_putint_x2( uint16 x, uint16 y, uint8 color, int32 i )
+ 132:../src/lcd.c  **** {
+ 2475              		.loc 1 132 0
+ 2476              		.cfi_startproc
+ 2477              		@ Function supports interworking.
+ 2478              		@ args = 0, pretend = 0, frame = 16
+ 2479              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2480 05cc 0DC0A0E1 		mov	ip, sp
+ 2481              	.LCFI32:
+ 2482              		.cfi_def_cfa_register 12
+ 2483 05d0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2484 05d4 04B04CE2 		sub	fp, ip, #4
+ 2485              		.cfi_offset 14, -8
+ 2486              		.cfi_offset 13, -12
+ 2487              		.cfi_offset 11, -16
+ 2488              	.LCFI33:
+ 2489              		.cfi_def_cfa 11, 4
+ 2490 05d8 10D04DE2 		sub	sp, sp, #16
+ 2491 05dc 18300BE5 		str	r3, [fp, #-24]
+ 2492 05e0 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2493 05e4 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2494 05e8 0230A0E1 		mov	r3, r2
+ 2495 05ec 11304BE5 		strb	r3, [fp, #-17]
+ 133:../src/lcd.c  **** 
+ 134:../src/lcd.c  **** }
+ 2496              		.loc 1 134 0
+ 2497 05f0 0CD04BE2 		sub	sp, fp, #12
+ 2498 05f4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2499 05f8 1EFF2FE1 		bx	lr
+ 2500              		.cfi_endproc
+ 2501              	.LFE16:
+ 2503              		.align	2
+ 2504              		.global	lcd_puthex_x2
+ 2506              	lcd_puthex_x2:
+ 2507              	.LFB17:
+ 135:../src/lcd.c  **** 
+ 136:../src/lcd.c  **** void lcd_puthex_x2( uint16 x, uint16 y, uint8 color, uint32 i )
+ 137:../src/lcd.c  **** {
+ 2508              		.loc 1 137 0
+ 2509              		.cfi_startproc
+ 2510              		@ Function supports interworking.
+ 2511              		@ args = 0, pretend = 0, frame = 16
+ 2512              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2513 05fc 0DC0A0E1 		mov	ip, sp
+ 2514              	.LCFI34:
+ 2515              		.cfi_def_cfa_register 12
+ 2516 0600 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2517 0604 04B04CE2 		sub	fp, ip, #4
+ 2518              		.cfi_offset 14, -8
+ 2519              		.cfi_offset 13, -12
+ 2520              		.cfi_offset 11, -16
+ 2521              	.LCFI35:
+ 2522              		.cfi_def_cfa 11, 4
+ 2523 0608 10D04DE2 		sub	sp, sp, #16
+ 2524 060c 18300BE5 		str	r3, [fp, #-24]
+ 2525 0610 BE004BE1 		strh	r0, [fp, #-14]	@ movhi
+ 2526 0614 B0114BE1 		strh	r1, [fp, #-16]	@ movhi
+ 2527 0618 0230A0E1 		mov	r3, r2
+ 2528 061c 11304BE5 		strb	r3, [fp, #-17]
+ 138:../src/lcd.c  **** 
+ 139:../src/lcd.c  **** }
+ 2529              		.loc 1 139 0
+ 2530 0620 0CD04BE2 		sub	sp, fp, #12
+ 2531 0624 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2532 0628 1EFF2FE1 		bx	lr
+ 2533              		.cfi_endproc
+ 2534              	.LFE17:
+ 2536              		.align	2
+ 2537              		.global	lcd_putWallpaper
+ 2539              	lcd_putWallpaper:
+ 2540              	.LFB18:
+ 140:../src/lcd.c  **** 
+ 141:../src/lcd.c  **** void lcd_putWallpaper( uint8 *bmp )
+ 142:../src/lcd.c  **** {
+ 2541              		.loc 1 142 0
+ 2542              		.cfi_startproc
+ 2543              		@ Function supports interworking.
+ 2544              		@ args = 0, pretend = 0, frame = 24
+ 2545              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2546 062c 0DC0A0E1 		mov	ip, sp
+ 2547              	.LCFI36:
+ 2548              		.cfi_def_cfa_register 12
+ 2549 0630 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2550 0634 04B04CE2 		sub	fp, ip, #4
+ 2551              		.cfi_offset 14, -8
+ 2552              		.cfi_offset 13, -12
+ 2553              		.cfi_offset 11, -16
+ 2554              	.LCFI37:
+ 2555              		.cfi_def_cfa 11, 4
+ 2556 0638 18D04DE2 		sub	sp, sp, #24
+ 2557 063c 20000BE5 		str	r0, [fp, #-32]
+ 143:../src/lcd.c  ****     uint32 headerSize;
+ 144:../src/lcd.c  **** 
+ 145:../src/lcd.c  ****     uint16 x, ySrc, yDst;
+ 146:../src/lcd.c  ****     uint16 offsetSrc, offsetDst;
+ 147:../src/lcd.c  **** 
+ 148:../src/lcd.c  ****     headerSize = bmp[10] + (bmp[11] << 8) + (bmp[12] << 16) + (bmp[13] << 24);
+ 2558              		.loc 1 148 0
+ 2559 0640 20301BE5 		ldr	r3, [fp, #-32]
+ 2560 0644 0A3083E2 		add	r3, r3, #10
+ 2561 0648 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2562 064c 0320A0E1 		mov	r2, r3
+ 2563 0650 20301BE5 		ldr	r3, [fp, #-32]
+ 2564 0654 0B3083E2 		add	r3, r3, #11
+ 2565 0658 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2566 065c 0334A0E1 		mov	r3, r3, asl #8
+ 2567 0660 032082E0 		add	r2, r2, r3
+ 2568 0664 20301BE5 		ldr	r3, [fp, #-32]
+ 2569 0668 0C3083E2 		add	r3, r3, #12
+ 2570 066c 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2571 0670 0338A0E1 		mov	r3, r3, asl #16
+ 2572 0674 032082E0 		add	r2, r2, r3
+ 2573 0678 20301BE5 		ldr	r3, [fp, #-32]
+ 2574 067c 0D3083E2 		add	r3, r3, #13
+ 2575 0680 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2576 0684 033CA0E1 		mov	r3, r3, asl #24
+ 2577 0688 033082E0 		add	r3, r2, r3
+ 2578 068c 18300BE5 		str	r3, [fp, #-24]
+ 149:../src/lcd.c  **** 
+ 150:../src/lcd.c  ****     bmp = bmp + headerSize;
+ 2579              		.loc 1 150 0
+ 2580 0690 20201BE5 		ldr	r2, [fp, #-32]
+ 2581 0694 18301BE5 		ldr	r3, [fp, #-24]
+ 2582 0698 033082E0 		add	r3, r2, r3
+ 2583 069c 20300BE5 		str	r3, [fp, #-32]
+ 151:../src/lcd.c  ****     
+ 152:../src/lcd.c  ****     for( ySrc=0, yDst=LCD_HEIGHT-1; ySrc<LCD_HEIGHT; ySrc++, yDst-- )                              
+ 2584              		.loc 1 152 0
+ 2585 06a0 0030A0E3 		mov	r3, #0
+ 2586 06a4 B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 2587 06a8 EF30A0E3 		mov	r3, #239
+ 2588 06ac B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+ 2589 06b0 2D0000EA 		b	.L34
+ 2590              	.L37:
+ 153:../src/lcd.c  ****     {
+ 154:../src/lcd.c  ****         offsetDst = yDst*LCD_WIDTH/2;
+ 2591              		.loc 1 154 0
+ 2592 06b4 B2215BE1 		ldrh	r2, [fp, #-18]
+ 2593 06b8 0230A0E1 		mov	r3, r2
+ 2594 06bc 0331A0E1 		mov	r3, r3, asl #2
+ 2595 06c0 023083E0 		add	r3, r3, r2
+ 2596 06c4 0333A0E1 		mov	r3, r3, asl #6
+ 2597 06c8 A32FA0E1 		mov	r2, r3, lsr #31
+ 2598 06cc 033082E0 		add	r3, r2, r3
+ 2599 06d0 C330A0E1 		mov	r3, r3, asr #1
+ 2600 06d4 BA314BE1 		strh	r3, [fp, #-26]	@ movhi
+ 155:../src/lcd.c  ****         offsetSrc = ySrc*LCD_WIDTH/2;
+ 2601              		.loc 1 155 0
+ 2602 06d8 B0215BE1 		ldrh	r2, [fp, #-16]
+ 2603 06dc 0230A0E1 		mov	r3, r2
+ 2604 06e0 0331A0E1 		mov	r3, r3, asl #2
+ 2605 06e4 023083E0 		add	r3, r3, r2
+ 2606 06e8 0333A0E1 		mov	r3, r3, asl #6
+ 2607 06ec A32FA0E1 		mov	r2, r3, lsr #31
+ 2608 06f0 033082E0 		add	r3, r2, r3
+ 2609 06f4 C330A0E1 		mov	r3, r3, asr #1
+ 2610 06f8 BC314BE1 		strh	r3, [fp, #-28]	@ movhi
+ 156:../src/lcd.c  ****         for( x=0; x<LCD_WIDTH/2; x++ )
+ 2611              		.loc 1 156 0
+ 2612 06fc 0030A0E3 		mov	r3, #0
+ 2613 0700 BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 2614 0704 0F0000EA 		b	.L35
+ 2615              	.L36:
+ 157:../src/lcd.c  ****             lcd_buffer[offsetDst+x] = ~bmp[offsetSrc+x];
+ 2616              		.loc 1 157 0 discriminator 2
+ 2617 0708 BA215BE1 		ldrh	r2, [fp, #-26]
+ 2618 070c BE305BE1 		ldrh	r3, [fp, #-14]
+ 2619 0710 033082E0 		add	r3, r2, r3
+ 2620 0714 BC115BE1 		ldrh	r1, [fp, #-28]
+ 2621 0718 BE205BE1 		ldrh	r2, [fp, #-14]
+ 2622 071c 022081E0 		add	r2, r1, r2
+ 2623 0720 20101BE5 		ldr	r1, [fp, #-32]
+ 2624 0724 022081E0 		add	r2, r1, r2
+ 2625 0728 0020D2E5 		ldrb	r2, [r2, #0]	@ zero_extendqisi2
+ 2626 072c 0220E0E1 		mvn	r2, r2
+ 2627 0730 FF1002E2 		and	r1, r2, #255
+ 2628 0734 48209FE5 		ldr	r2, .L38
+ 2629 0738 0310C2E7 		strb	r1, [r2, r3]
+ 156:../src/lcd.c  ****         for( x=0; x<LCD_WIDTH/2; x++ )
+ 2630              		.loc 1 156 0 discriminator 2
+ 2631 073c BE305BE1 		ldrh	r3, [fp, #-14]	@ movhi
+ 2632 0740 013083E2 		add	r3, r3, #1
+ 2633 0744 BE304BE1 		strh	r3, [fp, #-14]	@ movhi
+ 2634              	.L35:
+ 156:../src/lcd.c  ****         for( x=0; x<LCD_WIDTH/2; x++ )
+ 2635              		.loc 1 156 0 is_stmt 0 discriminator 1
+ 2636 0748 BE305BE1 		ldrh	r3, [fp, #-14]
+ 2637 074c 9F0053E3 		cmp	r3, #159
+ 2638 0750 ECFFFF9A 		bls	.L36
+ 152:../src/lcd.c  ****     for( ySrc=0, yDst=LCD_HEIGHT-1; ySrc<LCD_HEIGHT; ySrc++, yDst-- )                              
+ 2639              		.loc 1 152 0 is_stmt 1
+ 2640 0754 B0315BE1 		ldrh	r3, [fp, #-16]	@ movhi
+ 2641 0758 013083E2 		add	r3, r3, #1
+ 2642 075c B0314BE1 		strh	r3, [fp, #-16]	@ movhi
+ 2643 0760 B2315BE1 		ldrh	r3, [fp, #-18]	@ movhi
+ 2644 0764 013043E2 		sub	r3, r3, #1
+ 2645 0768 B2314BE1 		strh	r3, [fp, #-18]	@ movhi
+ 2646              	.L34:
+ 152:../src/lcd.c  ****     for( ySrc=0, yDst=LCD_HEIGHT-1; ySrc<LCD_HEIGHT; ySrc++, yDst-- )                              
+ 2647              		.loc 1 152 0 is_stmt 0 discriminator 1
+ 2648 076c B0315BE1 		ldrh	r3, [fp, #-16]
+ 2649 0770 EF0053E3 		cmp	r3, #239
+ 2650 0774 CEFFFF9A 		bls	.L37
+ 158:../src/lcd.c  ****     }
+ 159:../src/lcd.c  **** }
+ 2651              		.loc 1 159 0 is_stmt 1
+ 2652 0778 0CD04BE2 		sub	sp, fp, #12
+ 2653 077c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2654 0780 1EFF2FE1 		bx	lr
+ 2655              	.L39:
+ 2656              		.align	2
+ 2657              	.L38:
+ 2658 0784 00000000 		.word	lcd_buffer
+ 2659              		.cfi_endproc
+ 2660              	.LFE18:
+ 2662              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 lcd.c
+                            *COM*:00009600 lcd_buffer
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1704   .bss:00000000 state
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1705   .bss:00000000 $d
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1707   .text:00000000 $a
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1710   .text:00000000 lcd_init
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1876   .text:00000198 lcd_off
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1815   .text:00000110 $d
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1846   .text:00000180 $a
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1849   .text:00000180 lcd_on
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1903   .text:000001b0 lcd_status
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1934   .text:000001d4 lcd_clear
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:1961   .text:000001ec lcd_putpixel
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2048   .text:000002d4 $d
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2052   .text:000002d8 $a
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2055   .text:000002d8 lcd_getpixel
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2088   .text:00000308 lcd_draw_hrow
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2120   .text:00000334 lcd_draw_vrow
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2152   .text:00000360 lcd_draw_box
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2184   .text:0000038c lcd_putchar
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2302   .text:000004dc $d
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2306   .text:000004e0 $a
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2309   .text:000004e0 lcd_puts
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2342   .text:00000510 lcd_putint
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2375   .text:00000540 lcd_puthex
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2408   .text:00000570 lcd_putchar_x2
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2440   .text:0000059c lcd_puts_x2
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2473   .text:000005cc lcd_putint_x2
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2506   .text:000005fc lcd_puthex_x2
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2539   .text:0000062c lcd_putWallpaper
+C:\Users\Catalina\AppData\Local\Temp\ccFjH5qq.s:2658   .text:00000784 $d
+                     .debug_frame:00000010 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+font

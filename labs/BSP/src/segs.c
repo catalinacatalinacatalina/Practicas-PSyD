@@ -1,9 +1,9 @@
-/*
+
 #include <s3c44b0x.h>
 #include <s3cev40.h>
 #include <segs.h>
 
-static const uint8 hex2segs[16] = {0x12, ... };
+static const uint8 hex2segs[16] = {0x12 };
 
 static uint8 state;
         
@@ -28,4 +28,4 @@ uint8 segs_status( void )
 {
     return state;
 };
-*/
+

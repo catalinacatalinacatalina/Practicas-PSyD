@@ -1,0 +1,42 @@
+18:21:32 **** Build of configuration Debug for project lab7 ****
+cs-make all 
+'Building file: ../lab7.c'
+'Invoking: ARM Sourcery Windows GCC C Compiler'
+arm-none-eabi-gcc -I../../BSP/include -O0 -Wall -Wa,-adhlns="lab7.o.lst" -c -fmessage-length=0 -mapcs-frame -MMD -MP -MF"lab7.d" -MT"lab7.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "lab7.o" "../lab7.c"
+../lab7.c:39:6: warning: return type of 'main' is not 'int'
+'Finished building: ../lab7.c'
+' '
+'Building target: lab7.elf'
+'Invoking: ARM Sourcery Windows GCC C Linker'
+arm-none-eabi-gcc -T"../lab7.ld" -nostartfiles -L../../BSP/Debug -Wl,-Map,lab7.map -mcpu=arm7tdmi -g3 -gdwarf-2 -o "lab7.elf"  ./lab7.o   -lBSP
+./lab7.o: In function `main':
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:45: undefined reference to `lcd_init'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:47: undefined reference to `lcd_clear'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:48: undefined reference to `lcd_on'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:54: undefined reference to `lcd_draw_box'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:58: undefined reference to `lcd_puts'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:59: undefined reference to `lcd_puts'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:60: undefined reference to `lcd_puts'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:61: undefined reference to `lcd_putint'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:62: undefined reference to `lcd_puthex'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:66: undefined reference to `lcd_puts_x2'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:67: undefined reference to `lcd_puts_x2'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:68: undefined reference to `lcd_puts_x2'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:69: undefined reference to `lcd_putint_x2'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:70: undefined reference to `lcd_puthex_x2'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:79: undefined reference to `lcd_getpixel'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:81: undefined reference to `lcd_clear'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:86: undefined reference to `lcd_putpixel'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:91: undefined reference to `lcd_putWallpaper'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:93: undefined reference to `lcd_putWallpaper'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:95: undefined reference to `lcd_putWallpaper'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:97: undefined reference to `lcd_putWallpaper'
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:99: undefined reference to `lcd_putWallpaper'
+./lab7.o:C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:101: more undefined references to `lcd_putWallpaper' follow
+./lab7.o: In function `main':
+C:\Users\Catalina\Documents\Practicas-PSyD\labs\lab7\Debug/../lab7.c:108: undefined reference to `lcd_clear'
+collect2: ld returned 1 exit status
+cs-make: *** [lab7.elf] Error 1
+
+18:21:32 Build Finished (took 625ms)
+
