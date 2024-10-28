@@ -293,3 +293,5 @@ void lcd_putWallpaper(uint8 *bmp)
             lcd_buffer[offsetDst + x] = ~bmp[offsetSrc + x];
     }
 }
+lcd.c
+Mostrando lcd.c.

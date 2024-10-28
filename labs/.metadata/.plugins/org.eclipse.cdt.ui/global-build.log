@@ -1,9 +1,9 @@
-11:12:11 **** Incremental Build of configuration Debug for project BSP ****
+12:49:37 **** Incremental Build of configuration Debug for project BSP ****
 cs-make all 
-'Building file: ../src/segs.c'
+'Building file: ../src/lcd.c'
 'Invoking: ARM Sourcery Windows GCC C Compiler'
-arm-none-eabi-gcc -I..\..\BSP\include -O0 -Wall -Wa,-adhlns="src/segs.o.lst" -c -fmessage-length=0 -mapcs-frame -fno-builtin -MMD -MP -MF"src/segs.d" -MT"src/segs.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "src/segs.o" "../src/segs.c"
-'Finished building: ../src/segs.c'
+arm-none-eabi-gcc -I..\..\BSP\include -O0 -Wall -Wa,-adhlns="src/lcd.o.lst" -c -fmessage-length=0 -mapcs-frame -fno-builtin -MMD -MP -MF"src/lcd.d" -MT"src/lcd.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "src/lcd.o" "../src/lcd.c"
+'Finished building: ../src/lcd.c'
 ' '
 'Building target: libBSP.a'
 'Invoking: ARM Sourcery Windows GCC Archiver'

@@ -1,4 +1,23 @@
 
+Conversación abierta. 1 mensaje sin leer.
+
+Ir al contenido
+Uso de Correo de Universidad Complutense de Madrid con lectores de pantalla
+Habilita las notificaciones de escritorio para Correo de Universidad Complutense de Madrid.
+   Aceptar  No, gracias
+
+1 de 861
+lab7 psyd
+Recibidos
+
+IAGO BARROSO ORTEGA <iagobarr@ucm.es>
+Adjuntos
+12:48 (hace 0 minutos)
+para mí
+
+
+ 1 archivo adjunto
+•  Analizado por Gmail
 #include <s3c44b0x.h>
 #include <lcd.h>
 
@@ -293,3 +312,5 @@ void lcd_putWallpaper(uint8 *bmp)
             lcd_buffer[offsetDst + x] = ~bmp[offsetSrc + x];
     }
 }
+lcd.c
+Mostrando lcd.c.
