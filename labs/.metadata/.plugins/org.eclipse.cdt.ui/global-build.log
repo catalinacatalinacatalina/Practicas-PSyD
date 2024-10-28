@@ -1,14 +1,9 @@
-18:32:04 **** Incremental Build of configuration Debug for project BSP ****
+11:12:11 **** Incremental Build of configuration Debug for project BSP ****
 cs-make all 
-'Building file: ../src/lcd.c'
+'Building file: ../src/segs.c'
 'Invoking: ARM Sourcery Windows GCC C Compiler'
-arm-none-eabi-gcc -I..\..\BSP\include -O0 -Wall -Wa,-adhlns="src/lcd.o.lst" -c -fmessage-length=0 -mapcs-frame -fno-builtin -MMD -MP -MF"src/lcd.d" -MT"src/lcd.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "src/lcd.o" "../src/lcd.c"
-../src/lcd.c:8:14: warning: 'state' defined but not used
-../src/lcd.c: In function 'lcd_getpixel':
-../src/lcd.c:75:1: warning: control reaches end of non-void function
-../src/lcd.c: In function 'lcd_status':
-../src/lcd.c:50:5: warning: 'c' is used uninitialized in this function
-'Finished building: ../src/lcd.c'
+arm-none-eabi-gcc -I..\..\BSP\include -O0 -Wall -Wa,-adhlns="src/segs.o.lst" -c -fmessage-length=0 -mapcs-frame -fno-builtin -MMD -MP -MF"src/segs.d" -MT"src/segs.d" -mcpu=arm7tdmi -g3 -gdwarf-2 -o "src/segs.o" "../src/segs.c"
+'Finished building: ../src/segs.c'
 ' '
 'Building target: libBSP.a'
 'Invoking: ARM Sourcery Windows GCC Archiver'
