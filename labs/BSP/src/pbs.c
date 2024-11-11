@@ -1,4 +1,3 @@
-/*
 #include <s3c44b0x.h>
 #include <s3cev40.h>
 #include <pbs.h>
@@ -55,15 +54,14 @@ uint8 pb_timeout_getchar( uint16 ms )
 
 void pbs_open( void (*isr)(void) )
 {
-    pISR_PB   = ...;
-    EXTINTPND = ...;
-    I_ISPC    = ...;
-    INTMSK   &= ...;
+    pISR_PB   = (uint32) isr;
+    EXTINTPND = 0xF;
+    I_ISPC    = BIT_EINT4567;
+    INTMSK   &= ~(BIT_GLOBAL | BIT_EINT4567);
 }
 
 void pbs_close( void )
 {
-    INTMSK  |= ...;
-    pISR_PB  = ...;
+    INTMSK  |= BIT_EINT4567;
+    pISR_PB  = (uint32) isr_PB_dummy;
 }
-*/

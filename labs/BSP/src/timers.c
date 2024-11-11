@@ -1,4 +1,3 @@
-/*
 #include <s3c44b0x.h>
 #include <s3cev40.h>
 #include <timers.h>
@@ -12,23 +11,23 @@ static void sw_delay_init( void );
 
 void timers_init( void )
 {
-    TCFG0 = ...;
-    TCFG1 = ...;
+    TCFG0 = 0x00000000;
+    TCFG1 = 0x00000000;
 
-    TCNTB0 = ...;
-    TCMPB0 = ...;
-    TCNTB1 = ...;
-    TCMPB1 = ...;
-    TCNTB2 = ...;
-    TCMPB2 = ...;
-    TCNTB3 = ...;
-    TCMPB3 = ...;
-    TCNTB4 = ...;
-    TCMPB4 = ...;    
-    TCNTB5 = ...;
+    TCNTB0 = 0x0000;
+    TCMPB0 = 0x0000;
+    TCNTB1 = 0x0000;
+    TCMPB1 = 0x0000;
+    TCNTB2 = 0x0000;
+    TCMPB2 = 0x0000;
+    TCNTB3 = 0x0000;
+    TCMPB3 = 0x0000;
+    TCNTB4 = 0x0000;
+    TCMPB4 = 0x0000;
+    TCNTB5 = 0x0000;
 
-    TCON = ...;
-    TCON = ...;
+    TCON = ((1 << 1) | (1 << 9)| (1 << 13) | (1 << 17) | (1 << 21) | (1 << 25));
+    TCON = (TCON & ~(0xFFFFFFF));
 
     sw_delay_init();
 }
@@ -156,4 +155,4 @@ void timer0_close( void )
     INTMSK     |= ...;
     pISR_TIMER0 = ...;
 }
-*/
+

@@ -1,120 +1,136 @@
-/*
 #include <s3c44b0x.h>
 #include <s3cev40.h>
-#include <iis.h>
-#include <dma.h>
+#include <timers.h>
+#include <keypad.h>
 
-static void isr_bdma0( void ) __attribute__ ((interrupt ("IRQ")));
+extern void isr_KEYPAD_dummy( void );
 
-static uint8 iomode;
-
-void iis_init( uint8 mode )
+uint8 keypad_scan( void )
 {
-    iomode = mode;
+    uint8 aux;
 
-    if( iomode == IIS_POLLING )
+    aux = *( KEYPAD_ADDR + 0x1c );
+    if( (aux & 0x0f) != 0x0f )
     {
-        IISPSR  = ...;
-        IISMOD  = ...;
-        IISFCON = ...;
-        IISCON  = ...;
+        if( (aux & 0x8) == 0 )
+            return KEYPAD_KEY0;
+        else if( (aux & 0x4) == 0 )
+            return KEYPAD_KEY1;
+        else if( (aux & 0x2) == 0 )
+            return KEYPAD_KEY2;
+        else if( (aux & 0x1) == 0 )
+            return KEYPAD_KEY3;
     }
-    if( iomode == IIS_DMA )
-    {
-        IISPSR  = ...; 
-        IISMOD  = ...;
-        IISFCON = ...;
-        IISCON  = ...;
-        bdma0_init();
-        bdma0_open( isr_bdma0 );
-    }
+	aux = *( KEYPAD_ADDR + 0x1A );
+	if( (aux & 0x0f) != 0x0f )
+	{
+		if( (aux & 0x8) == 0 )
+			return KEYPAD_KEY4;
+		else if( (aux & 0x4) == 0 )
+			return KEYPAD_KEY5;
+		else if( (aux & 0x2) == 0 )
+			return KEYPAD_KEY6;
+		else if( (aux & 0x1) == 0 )
+			return KEYPAD_KEY7;
+	}
+    ...
+
+    return KEYPAD_FAILURE;
 }
 
-static void isr_bdma0( void )
-{
-    IISCON &= ~1;
-    I_ISPC = BIT_BDMA0; 
-}
-
-inline void iis_putSample( int16 ch0, int16 ch1 )
-{
-    while( ... );
-    IISFIF = ch0;
-    IISFIF = ch1;
-}
-
-inline void iis_getSample( int16 *ch0, int16 *ch1 )
+uint8 keypad_pressed( void )
 {
     ...
 }
 
-void iis_play( int16 *buffer, uint32 length, uint8 loop )
-{
-    uint32 i;
-    int16 ch1, ch2;
-
-    if( iomode == IIS_POLLING )
-        for( i=0; i<length/2; )
-        {
-            ch1 = buffer[i++];
-            ch2 = buffer[i++];
-            iis_putSample( ch1, ch2 );
-        }
-    if( iomode == IIS_DMA )
-        ...
-}
-
-void iis_rec( int16 *buffer, uint32 length )
-{
-    uint32 i;
-    int16 ch1, ch2;
-
-    if( iomode == IIS_POLLING )
-        ...
-    if( iomode == IIS_DMA )
-    {
-        while( IISCON & 1  );
-        BDISRC0  = (1 << 30) | (3 << 28) | (uint32) &IISFIF;
-        BDIDES0  = (2 << 30) | (1 << 28) | (uint32) buffer;      
-        BDCON0   = 0;
-        BDICNT0  = (1 << 30) | (1 << 26) | (3 << 22) | (0xfffff & length); 
-        BDICNT0 |= (1 << 20);
-
-        IISMOD   = (IISMOD & ~(3 << 6)) | ...;
-        IISCON  |= ...;
-    }
-}
-
-void iis_pause( void )
+void keypad_open( void (*isr)(void) )
 {
     ...
 }
 
-void iis_continue( void )
+void keypad_close( void )
 {
     ...
 }
 
-uint8 iis_status( void )
+#if KEYPAD_IO_METHOD == POOLING
+
+
+void keypad_init( void )
+{
+    timers_init();
+};
+
+uint8 keypad_getchar( void )
 {
     ...
 }
 
-void iis_playWawFile( int16 *wav, uint8 loop )
+uint8 keypad_getchartime( uint16 *ms )
 {
-
-    uint32 size;
-    char *p;
-
-    p = (char *) wav;
-    while ( !(p[0] == 'd' && p[1] == 'a' && p[2] == 't' && p[3] == 'a') ) // busca el chunck data
-        p++;
-    p += 4;
-
-    size = p[0] + (p[1] << 8) + (p[2] << 16) + (p[3] << 24); // los datos de cabecera están en little-endian
-    p += 4;
-
-    iis_play( (int16 *)p, size, loop );
-
+    ...
 }
-*/
+
+uint8 keypad_timeout_getchar( uint16 ms )
+{
+    ...
+}
+
+#elif KEYPAD_IO_METHOD == INTERRUPT
+
+static uint8 key = KEYPAD_FAILURE;
+
+static void keypad_down_isr( void ) __attribute__ ((interrupt ("IRQ")));
+static void timer0_down_isr( void ) __attribute__ ((interrupt ("IRQ")));
+static void keypad_up_isr( void ) __attribute__ ((interrupt ("IRQ")));
+static void timer0_up_isr( void ) __attribute__ ((interrupt ("IRQ")));
+
+void keypad_init( void )
+{
+    EXTINT = (EXTINT & ~(0xf<<4)) | (2<<4);	// Falling edge tiggered
+    timers_init();
+    keypad_open( keypad_down_isr );
+};
+
+uint8 keypad_getchar( void )
+{
+	uint8 scancode;
+
+    while( key == KEYPAD_FAILURE );
+    scancode = key;
+    key = KEYPAD_FAILURE;
+    return scancode;
+}
+
+static void keypad_down_isr( void )
+{
+	timer0_open_ms( timer0_down_isr, KEYPAD_KEYDOWN_DELAY, TIMER_ONE_SHOT );
+	INTMSK   |= BIT_KEYPAD;
+	I_ISPC	  = BIT_KEYPAD;
+}
+
+static void timer0_down_isr( void )
+{
+	key = keypad_scan();
+	EXTINT = (EXTINT & ~(0xf<<4)) | (4<<4);
+	keypad_open( keypad_up_isr );
+	I_ISPC = BIT_TIMER0;
+}
+
+static void keypad_up_isr( void )
+{
+	timer0_open_ms( timer0_up_isr, KEYPAD_KEYUP_DELAY, TIMER_ONE_SHOT );
+	INTMSK   |= BIT_KEYPAD;
+	I_ISPC	  = BIT_KEYPAD;
+}
+
+static void timer0_up_isr( void )
+{
+	EXTINT = (EXTINT & ~(0xf<<4)) | (2<<4);
+	keypad_open( keypad_down_isr );
+	I_ISPC = BIT_TIMER0;
+}
+
+#else
+	#error No se ha definido el metodo de E/S del keypad
+#endif
