@@ -1,3 +1,4 @@
+
 #include <s3c44b0x.h>
 #include <s3cev40.h>
 #include <pbs.h>
@@ -12,9 +13,9 @@ void pbs_init( void )
 
 uint8 pb_scan( void )
 {
-    if( ... )
+    if( (PB_LEFT & PDATG) == PB_UP )
         return PB_LEFT;
-    else if( ... )
+    else if( (PB_RIGHT & PDATG) == PB_UP )
         return PB_RIGHT;
     else
         return PB_FAILURE;
@@ -22,25 +23,40 @@ uint8 pb_scan( void )
 
 uint8 pb_pressed( void )
 {
-    ...
+	if (((PDATG & PB_LEFT) == PB_UP) || ((PDATG & PB_RIGHT) == PB_UP)){
+			return '1';
+		}
+
+		return 0;
 }
 
 uint8 pb_getchar( void )
 {
-    ...
+	uint8 scancode;
+
+		while(!pb_pressed());
+
+		sw_delay_ms(PB_KEYDOWN_DELAY);
+		scancode = pb_scan();
+
+		while((PDATG & scancode) == 0){
+			sw_delay_ms( PB_KEYUP_DELAY );
+		}
+
+		return scancode;
 }
 
 uint8 pb_getchartime( uint16 *ms )
 {
     uint8 scancode;
     
-    while( ... );
+    while( !pb_pressed() );
     timer3_start();
     sw_delay_ms( PB_KEYDOWN_DELAY );
     
     scancode = pb_scan();
     
-    while( ... );
+    while( (PDATG & scancode) == PB_UP );
     *ms = timer3_stop() / 10;
     sw_delay_ms( PB_KEYUP_DELAY );
 
@@ -49,7 +65,23 @@ uint8 pb_getchartime( uint16 *ms )
 
 uint8 pb_timeout_getchar( uint16 ms )
 {
-    ...
+	 uint8 scancode;
+
+	    timer3_start_timeout(10*ms);
+
+	    while(!pb_pressed()&& !timer3_timeout());
+	    	if (timer3_timeout())
+	    		    	return PB_TIMEOUT;
+
+	    sw_delay_ms( PB_KEYDOWN_DELAY );
+	    scancode = pb_scan();
+	    timer3_start_timeout(10*ms);
+	    while(pb_pressed() && !timer3_timeout());
+	    	if(timer3_timeout()){
+	    		return PB_TIMEOUT;
+	    	}
+	    sw_delay_ms( PB_KEYUP_DELAY );
+	    return scancode;
 }
 
 void pbs_open( void (*isr)(void) )

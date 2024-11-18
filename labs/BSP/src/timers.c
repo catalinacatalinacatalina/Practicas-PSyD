@@ -1,3 +1,4 @@
+
 #include <s3c44b0x.h>
 #include <s3cev40.h>
 #include <timers.h>
@@ -27,7 +28,7 @@ void timers_init( void )
     TCNTB5 = 0x0000;
 
     TCON = ((1 << 1) | (1 << 9)| (1 << 13) | (1 << 17) | (1 << 21) | (1 << 25));
-    TCON = (TCON & ~(0xFFFFFFF));
+    TCON = 0x0;
 
     sw_delay_init();
 }
@@ -46,7 +47,13 @@ void timer3_delay_ms( uint16 n )
 {
     for( ; n; n-- )
     {
-        ...
+    	TCFG0 = (TCFG0 & ~(0XFF << 8)) | (0 << 8);
+    	TCFG1 = (TCFG1 & ~(0xf << 12)) | (0 << 12);
+    	TCNTB3 = 32000;
+    	TCON = (TCON & ~(0xf << 16)) | (1 << 17);
+    	TCON = (TCON & ~(0xf << 16)) | (1 << 16);
+    	while( !TCNTO3 );
+    	while(TCNTO3);
     }
 }
 
@@ -59,7 +66,15 @@ void sw_delay_ms( uint16 n )
 
 void timer3_delay_s( uint16 n )
 {
-    ...
+	for( ; n; n-- ){
+		TCFG0 = (TCFG0 & ~(0XFF << 8)) | (63 << 8);
+		TCFG1 = (TCFG1 & ~(0xf << 12)) | (4 << 12);
+		TCNTB3 = 31250;
+		TCON = (TCON & ~(0xf << 16)) | (1 << 17);
+		TCON = (TCON & ~(0xf << 16)) | (1 << 16);
+		while( !TCNTO3 );
+		while(TCNTO3);
+	}
 }
 
 void sw_delay_s( uint16 n )
@@ -104,55 +119,53 @@ uint16 timer3_timeout( )
 
 void timer0_open_tick( void (*isr)(void), uint16 tps )
 {
-    pISR_TIMER0 = ...;
-    I_ISPC      = ...;
-    INTMSK     &= ...;
+    pISR_TIMER0 = (uint32)isr;
+    I_ISPC      = BIT_TIMER0;
+    INTMSK     &= ~(BIT_GLOBAL | BIT_TIMER0);
 
     if( tps > 0 && tps <= 10 ) {
-        TCFG0  = ...;
-        TCFG1  = ...;
+        TCFG0  = (TCFG0 & ~(0xff)) | (49);
+        TCFG1  = (TCFG1 & ~(0xf)) | (4);
         TCNTB0 = (40000U / tps);
     } else if( tps > 10 && tps <= 100 ) {
-        TCFG0  = ...;
-        TCFG1  = ...;
+        TCFG0  = (TCFG0 & ~(0xff)) | (19);
+        TCFG1  = (TCFG1 & ~(0xf)) | (2);
         TCNTB0 = (400000U / (uint32) tps);
     } else if( tps > 100 && tps <= 1000 ) {
-        TCFG0  = ...;
-        TCFG1  = ...;
+        TCFG0  = (TCFG0 & ~(0xff)) | (7);
+        TCFG1  = (TCFG1 & ~(0xf)) | (0);
         TCNTB0 = (4000000U / (uint32) tps);
     } else if ( tps > 1000 ) {
-        TCFG0  = ...;
-        TCFG1  = ...;
+        TCFG0  = (TCFG0 & ~(0xff));
+        TCFG1  = (TCFG1 & ~(0xf));
         TCNTB0 = (32000000U / (uint32) tps);
     }
 
-    TCON = ...;
-    TCON = ...;
+    TCON = (TCON & ~(0xf << 0)) | (1 << 3) | (1 << 1);
+    TCON = (TCON & ~(0xf << 0)) | (1 << 3) | (1 << 0);
 }
-
 void timer0_open_ms( void (*isr)(void), uint16 ms, uint8 mode )
 {
-    pISR_TIMER0 = ...;
-    I_ISPC      = ...;
-    INTMSK     &= ...;
+    pISR_TIMER0 = (uint32)isr;
+    I_ISPC      = BIT_TIMER0;
+    INTMSK     &= ~(BIT_GLOBAL | BIT_TIMER0);
 
-    TCFG0 = ...;
-    TCFG1 = ...;
+    TCFG0 = (TCFG0 & ~(0xff << 0)) | (199);
+    TCFG1 = (TCFG1 & ~(0xf << 0)) | (4);
     TCNTB0 = 10*ms;
 
-    TCON = ...;
-    TCON = ...;
+    TCON = (TCON & ~(0xf << 0)) | (mode << 3) | (1 << 1);
+    TCON = (TCON & ~(0xf << 0)) | (mode << 3) | (1 << 0);
 }
 
 void timer0_close( void )
 {
-    TCNTB0 = ...;
-    TCMPB0 = ...;
+    TCNTB0 = 0x00000;
+    TCMPB0 = 0x00000;
 
-    TCON = ...;
-    TCON = ...;
+    TCON = (TCON & ~(0xf << 0)) | (1 << 1);
+    TCON = (TCON & ~(0xf << 0)) | (1 << 0);
     
-    INTMSK     |= ...;
-    pISR_TIMER0 = ...;
+    INTMSK     |= BIT_TIMER0;
+    pISR_TIMER0 = (uint32)isr_TIMER0_dummy;
 }
-
