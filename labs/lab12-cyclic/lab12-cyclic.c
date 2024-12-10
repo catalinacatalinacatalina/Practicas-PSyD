@@ -4,14 +4,14 @@
 **    lab12-cyclic.c  14/1/2021
 **
 **    (c) J.M. Mendias
-**    Programación de Sistemas y Dispositivos
-**    Facultad de Informática. Universidad Complutense de Madrid
+**    Programaciï¿½n de Sistemas y Dispositivos
+**    Facultad de Informï¿½tica. Universidad Complutense de Madrid
 **
-**  Propósito:
-**    Ejemplo de una aplicación guiada por tiempo con arquitectura
+**  Propï¿½sito:
+**    Ejemplo de una aplicaciï¿½n guiada por tiempo con arquitectura
 **    cyclic executive
 **
-**  Notas de diseño:
+**  Notas de diseï¿½o:
 **
 **-----------------------------------------------------------------*/
 
@@ -26,6 +26,8 @@
 #include <keypad.h>
 #include <timers.h>
 #include <rtc.h>
+//Incluimos lcd
+#include <lcd.h>
 
 #define TICKS_PER_SEC   (100)
 
@@ -36,16 +38,17 @@
 
 typedef void (*pf_t)(void);
 
-/* Declaración de recursos */
+/* Declaraciï¿½n de recursos */
 
 uint8 scancode;
 boolean flagTask5;
 boolean flagTask6;
+boolean flagTask8;
 
 volatile boolean flagPb;
 volatile boolean flagTimer;
 
-/* Declaración de tareas */
+/* Declaraciï¿½n de tareas */
 
 void Task1( void );
 void Task2( void );
@@ -54,8 +57,10 @@ void Task4( void );
 void Task5( void );
 void Task6( void );
 void Task7( void );
+void Task8( void );  // Task aï¿½adido
+void Task9( void );  // Task aï¿½adido
 
-/* Declaración de trabajos */
+/* Declaraciï¿½n de trabajos */
 
 void JobA( void );
 void JobB( void );
@@ -63,7 +68,7 @@ void JobC( void );
 void JobD( void );
 void JobE( void );
 
-/* Planificación estática de trabajos */
+/* Planificaciï¿½n estï¿½tica de trabajos */
 
 const pf_t pjobs[NUM_JOBS] =
 {
@@ -89,7 +94,7 @@ const pf_t pjobs[NUM_JOBS] =
     JobA, JobB, JobA, JobB, JobA, JobB, JobA, JobB, JobA, JobE     /* 10000 ms */
 };
 
-/* Declaración de RTI */
+/* Declaraciï¿½n de RTI */
 
 void isr_pb( void ) __attribute__ ((interrupt ("IRQ")));
 void isr_tick( void ) __attribute__ ((interrupt ("IRQ")));
@@ -108,8 +113,13 @@ void main( void )
     rtc_init();
     pbs_init();
     keypad_init();  
+    lcd_init();
+
+    //Limpiamos y encendemos el lcd
+    lcd_clear();
+    lcd_on();
   
-    uart0_puts( "\n\n Ejecutando una aplicación cyclic executive\n" );
+    uart0_puts( "\n\n Ejecutando una aplicaciï¿½n cyclic executive\n" );
     uart0_puts(     " ------------------------------------------\n\n" ) ;
 
     flagTask5 = FALSE;    /* Inicializa flags */
@@ -124,13 +134,15 @@ void main( void )
     Task5();
     Task6();
     Task7();
+    Task8();  // Task aï¿½adido
+    Task9();  // Task aï¿½adido
 
-    pbs_open( isr_pb );                                          /* Instala isr_pbs como RTI por presión de pulsadores  */
+    pbs_open( isr_pb );                                          /* Instala isr_pbs como RTI por presiï¿½n de pulsadores  */
     timer0_open_ms( isr_tick, MINOR_PERIOD, TIMER_INTERVAL );    /* Instala isr_tick como RTI del timer0  */
         
     while( 1 )
     {
-        sleep();                        /* Entra en estado IDLE, sale por interrupción */
+        sleep();                        /* Entra en estado IDLE, sale por interrupciï¿½n */
         if( flagTimer )
         {
         	flagTimer = FALSE;
@@ -154,6 +166,7 @@ void JobB( void )
     Task5();
     Task6();
     Task7();
+    Task8();
 }
 
 void JobC( void )
@@ -163,6 +176,7 @@ void JobC( void )
     Task6();
     Task1();
     Task7();
+    Task8();
 }
 
 void JobD( void )
@@ -172,7 +186,9 @@ void JobD( void )
     Task6();
     Task1();
     Task3();
+    Task9();
     Task7();
+    Task8();
 }
 
 void JobE( void )
@@ -182,8 +198,10 @@ void JobE( void )
     Task6();
     Task1();
     Task3();
+    Task9();
     Task4();
     Task7();
+    Task8();
 }
 
 /*******************************************************************/
@@ -195,7 +213,7 @@ void Task1( void )  /* Cada 0,5 segundos (50 ticks) alterna el led que se encien
     if( init )
     {
         init = FALSE;
-        uart0_puts( " Task 1: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+        uart0_puts( " Task 1: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
         led_on( LEFT_LED );
         led_off( RIGHT_LED );
     }
@@ -206,7 +224,7 @@ void Task1( void )  /* Cada 0,5 segundos (50 ticks) alterna el led que se encien
     }
 }
 
-void Task2( void )  /* Cada 50 ms (5 ticks) muestrea el keypad y envía el scancode a otras tareas */
+void Task2( void )  /* Cada 50 ms (5 ticks) muestrea el keypad y envï¿½a el scancode a otras tareas */
 {
     static boolean init = TRUE;
     static enum { wait_keydown, scan, wait_keyup } state;
@@ -214,7 +232,7 @@ void Task2( void )  /* Cada 50 ms (5 ticks) muestrea el keypad y envía el scanco
     if( init )
     {
         init  = FALSE;
-        uart0_puts( " Task 2: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+        uart0_puts( " Task 2: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
         state = wait_keydown;
     }
     else switch( state )
@@ -229,6 +247,7 @@ void Task2( void )  /* Cada 50 ms (5 ticks) muestrea el keypad y envía el scanco
             {
                 flagTask5 = TRUE;
                 flagTask6 = TRUE;
+                flagTask8 = TRUE;
             }
             state = wait_keyup;
             break;
@@ -247,7 +266,7 @@ void Task3( void  )  /* Cada segundo (100 ticks) muestra por la UART0 la hora de
     if( init )
     {
         init = FALSE;
-        uart0_puts( " Task 3: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+        uart0_puts( " Task 3: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
     }
     else
     {
@@ -270,7 +289,7 @@ void Task4( void )  /* Cada 10 segundos (1000 ticks) muestra por la UART0 los ti
     if( init )
     {
         init = FALSE;
-        uart0_puts( " Task 4: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+        uart0_puts( " Task 4: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
         ticks = 0;
     }
     else
@@ -289,7 +308,7 @@ void Task5( void )  /* Cada vez que reciba un scancode lo muestra por la UART0 *
     if( init )
     {
         init = FALSE;
-        uart0_puts( " Task 5: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+        uart0_puts( " Task 5: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
     }
     else if( flagTask5 )
     {
@@ -307,7 +326,7 @@ void Task6( void )  /* Cada vez que reciba un scancode lo muestra por los 7 segm
     if( init )
     {
         init = FALSE;
-        uart0_puts( " Task 6: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+        uart0_puts( " Task 6: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
     }
     else if( flagTask6 )
     {
@@ -323,12 +342,46 @@ void Task7( void )  /* Cada vez que se presione un pulsador lo avisa por la UART
     if( init )
     {
         init = FALSE;
-        uart0_puts( " Task 7: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+        uart0_puts( " Task 7: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
     }
     else if( flagPb )
     {   
         flagPb = FALSE;
-        uart0_puts( "  (Task 7) Se ha pulsado algún pushbutton...\n" );
+        uart0_puts( "  (Task 7) Se ha pulsado algï¿½n pushbutton...\n" );
+    }
+}
+
+void Task8(void){
+    static boolean init = TRUE;
+
+    if( init )
+    {
+        init = FALSE;
+        uart0_puts( " Task 8: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
+    }
+    else if (flagTask8)
+    {
+    	flagTask8 = FALSE;
+    	lcd_puts(15, 16, BLACK, "- La tecla " );
+    	lcd_puthex(120, 16, BLACK, scancode );
+    	lcd_puts(129, 16, BLACK, " ha sido presionada\n" );
+    }
+}
+
+void Task9(void){
+    static boolean init = TRUE;
+    rtc_time_t rtc_time;
+
+    if( init )
+    {
+        init = FALSE;
+        uart0_puts( " Task 9: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semï¿½foro) */
+    }
+    else
+    {
+        rtc_gettime( &rtc_time );
+        lcd_puts( 20, 32, BLACK, "(Task 9) Tiempo: " );
+        lcd_putint(20, 48, BLACK, rtc_time.sec );
     }
 }
 

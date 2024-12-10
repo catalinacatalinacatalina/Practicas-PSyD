@@ -26,6 +26,7 @@
 #include <keypad.h>
 #include <timers.h>
 #include <rtc.h>
+#include <lcd.h>
 
 #define TICKS_PER_SEC   (100)
 
@@ -34,6 +35,7 @@
 uint8 scancode;
 boolean flagTask5;
 boolean flagTask6;
+boolean flagTask8;
 
 volatile boolean flagPb;
 volatile boolean flagToggleLeds;
@@ -50,6 +52,8 @@ void Task4( void );
 void Task5( void );
 void Task6( void );
 void Task7( void );
+void Task8( void );
+void Task9( void );
 
 /* Declaración de RTI */
 
@@ -67,7 +71,11 @@ void main( void )
     segs_init();
     rtc_init();
     pbs_init();
-    keypad_init();  
+    keypad_init();
+    lcd_init();
+
+    lcd_clear();
+    lcd_on();
 
     uart0_puts( "\n\n Ejecutando una aplicación foreground/background\n" );
     uart0_puts( " -----------------------------------------------\n\n" ) ;
@@ -75,6 +83,7 @@ void main( void )
     flagTask5      = FALSE;    /* Inicializa flags */
     flagTask6      = FALSE;
     flagPb         = FALSE;
+    flagTask8      = FALSE;
     flagToggleLeds = FALSE;
     flagReadKeypad = FALSE;
     flagWriteRTC   = FALSE;
@@ -87,7 +96,9 @@ void main( void )
     Task5();
     Task6();
     Task7();
-   
+    Task8();
+    Task9();
+
     pbs_open( isr_pb );                           /* Instala isr_pbs como RTI por presión de pulsadores  */
     timer0_open_tick( isr_tick, TICKS_PER_SEC );  /* Instala isr_tick como RTI del timer0  */
         
@@ -108,6 +119,7 @@ void main( void )
         {
             flagWriteRTC = FALSE;
             Task3();
+            Task9();
         }
         if( flagWriteTicks )
         {
@@ -128,6 +140,10 @@ void main( void )
         {
             flagPb = FALSE;
             Task7();
+        }
+        if( flagTask8 ){
+            flagTask8 = FALSE;
+            Task8();
         }
     }
 }
@@ -175,6 +191,7 @@ void Task2( void )  /* Cada 50 ms (5 ticks) muestrea el keypad y envía el scanco
             {
                 flagTask5 = TRUE;
                 flagTask6 = TRUE;
+                flagTask8 = TRUE;
             }
             state = wait_keyup;
             break;
@@ -272,6 +289,39 @@ void Task7( void )  /* Cada vez que se presione un pulsador lo avisa por la UART
     else
     {   
         uart0_puts( "  (Task 7) Se ha pulsado algún pushbutton...\n" );
+    }
+}
+
+void Task8(void){
+    static boolean init = TRUE;
+
+    if( init )
+    {
+        init = FALSE;
+        uart0_puts( " Task 8: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+    }
+    else
+    {
+    	lcd_puts(15, 16, BLACK, "- La tecla " );
+    	lcd_puthex(120, 16, BLACK, scancode );
+    	lcd_puts(129, 16, BLACK, " ha sido presionada\n" );
+    }
+}
+
+void Task9(void){
+    static boolean init = TRUE;
+    rtc_time_t rtc_time;
+
+    if( init )
+    {
+        init = FALSE;
+        uart0_puts( " Task 9: iniciada.\n" );  /* Muestra un mensaje inicial en la UART0 (no es necesario semáforo) */
+    }
+    else
+    {
+        rtc_gettime( &rtc_time );
+        lcd_puts( 20, 32, BLACK, "(Task 9) Tiempo: " );
+        lcd_putint(200, 32, BLACK, rtc_time.sec );
     }
 }
 

@@ -4,13 +4,13 @@
 **    lab12.c  12/1/2021
 **
 **    (c) J.M. Mendias
-**    Programación de Sistemas y Dispositivos
-**    Facultad de Informática. Universidad Complutense de Madrid
+**    Programaciï¿½n de Sistemas y Dispositivos
+**    Facultad de Informï¿½tica. Universidad Complutense de Madrid
 **
-**  Propósito:
-**    Ejemplo de una aplicación bajo uC/OS-II
+**  Propï¿½sito:
+**    Ejemplo de una aplicaciï¿½n bajo uC/OS-II
 **
-**  Notas de diseño:
+**  Notas de diseï¿½o:
 **
 **-----------------------------------------------------------------*/
 
@@ -28,8 +28,10 @@
 #include <keypad.h>
 #include <timers.h>
 #include <rtc.h>
+//Incluimos lcd
+#include <lcd.h>
 
-/* Declaración de pilas */
+/* Declaraciï¿½n de pilas */
 
 #define    TASK_STK_SIZE    10*1024
 
@@ -40,16 +42,18 @@ OS_STK Task4Stk[TASK_STK_SIZE];
 OS_STK Task5Stk[TASK_STK_SIZE];
 OS_STK Task6Stk[TASK_STK_SIZE];
 OS_STK Task7Stk[TASK_STK_SIZE];
+OS_STK Task8Stk[TASK_STK_SIZE]; // Tarea aï¿½adida
+OS_STK Task9Stk[TASK_STK_SIZE]; // Tarea aï¿½adida
 OS_STK TaskStartStk[TASK_STK_SIZE];
 
-/* Declaración de recursos */
+/* Declaraciï¿½n de recursos */
 
-OS_EVENT *uart0Sem;                /* Semáforo para el acceso mutex a la UART0 */
+OS_EVENT *uart0Sem;                /* Semï¿½foro para el acceso mutex a la UART0 */
+OS_EVENT *lcdSem;                  /* Semï¿½foro para el acceso mutex al lcd */
+OS_EVENT *keypadMbox;              /* Buzï¿½n para el scancode de la tecla pulsada */
+OS_EVENT *flagPb;                  /* Flag para seï¿½alizar la presiï¿½n de un pulsador */
 
-OS_EVENT *keypadMbox;              /* Buzón para el scancode de la tecla pulsada */
-OS_EVENT *flagPb;                  /* Flag para señalizar la presión de un pulsador */
-
-/* Declaración de tareas */
+/* Declaraciï¿½n de tareas */
 
 void Task1( void *id );
 void Task2( void *id );
@@ -58,14 +62,16 @@ void Task4( void *id );
 void Task5( void *id );
 void Task6( void *id );
 void Task7( void *id );
+void Task8( void *id ); // Tarea aï¿½adida
+void Task9( void *id ); // Tarea aï¿½adida
 void TaskStart( void *pdata );
 
-/* Declaración de RTI */
+/* Declaraciï¿½n de RTI */
 
 extern void OSTickISR( void );       /* RTI del tick del sistema */
 
-extern void OS_CPU_isr_pb( void );   /* RTI (wrapper) por pulsación teclado */
-void isr_pb( void );                 /* Función invocada por el anterior wrapper que atiende al dispositivo, no debe tener el atributo interrupt */
+extern void OS_CPU_isr_pb( void );   /* RTI (wrapper) por pulsaciï¿½n teclado */
+void isr_pb( void );                 /* Funciï¿½n invocada por el anterior wrapper que atiende al dispositivo, no debe tener el atributo interrupt */
 
 /*******************************************************************/
 
@@ -79,6 +85,11 @@ void main( void )
     rtc_init();
     pbs_init();
     keypad_init();
+    lcd_init();
+
+    //Limpiamos y encendemos el lcd
+    lcd_clear();
+    lcd_on();
 
     uart0_puts( "\n\n Ejecutando uCOS-II (version " );
     uart0_putint( OSVersion() );
@@ -86,7 +97,8 @@ void main( void )
     uart0_puts( "----------------------------------\n\n" ) ;
 
     OSInit();                                                              /* Inicializa el kernel              */
-    uart0Sem   = OSSemCreate( 1 );                                         /* Crea recursos                     */
+    uart0Sem   = OSSemCreate( 1 );
+    lcdSem     = OSSemCreate( 1 );
     keypadMbox = OSMboxCreate( NULL );
     flagPb     = OSSemCreate( 0 ); 
     
@@ -105,21 +117,25 @@ void TaskStart( void *pdata )
     const char id5 = '5';
     const char id6 = '6';
     const char id7 = '7';
+    const char id8 = '8'; // Identificador aï¿½adido
+    const char id9 = '9'; // Identificador aï¿½adido
   
     OS_ENTER_CRITICAL();
     timer0_open_tick( OSTickISR, OS_TICKS_PER_SEC );  /* Instala OSTickISR como RTI del timer0                     */
-    pbs_open( OS_CPU_isr_pb );                        /* Instala OS_CPU_isr_pb como RTI por presión de pulsadores  */
+    pbs_open( OS_CPU_isr_pb );                        /* Instala OS_CPU_isr_pb como RTI por presiï¿½n de pulsadores  */
     OS_EXIT_CRITICAL();
 
-    // OSStatInit();                     /* Opcionalmente, arranca la tarea del kernel de recopilación de estadísticas de uso de CPU  */
+    // OSStatInit();                     /* Opcionalmente, arranca la tarea del kernel de recopilaciï¿½n de estadï¿½sticas de uso de CPU  */
 
-    OSTaskCreate( Task1, (void *)&id1, &Task1Stk[TASK_STK_SIZE - 1], 6 );      /* Crea las tareas de la aplicación */
-    OSTaskCreate( Task2, (void *)&id2, &Task2Stk[TASK_STK_SIZE - 1], 1 );      /* Las tareas más frecuentes tienen mayor prioridad (criterio Rate-Monotonic-Scheduling) */
+    OSTaskCreate( Task1, (void *)&id1, &Task1Stk[TASK_STK_SIZE - 1], 6 );      /* Crea las tareas de la aplicaciï¿½n */
+    OSTaskCreate( Task2, (void *)&id2, &Task2Stk[TASK_STK_SIZE - 1], 1 );      /* Las tareas mï¿½s frecuentes tienen mayor prioridad (criterio Rate-Monotonic-Scheduling) */
     OSTaskCreate( Task3, (void *)&id3, &Task3Stk[TASK_STK_SIZE - 1], 7 );
     OSTaskCreate( Task4, (void *)&id4, &Task4Stk[TASK_STK_SIZE - 1], 9 );
     OSTaskCreate( Task5, (void *)&id5, &Task5Stk[TASK_STK_SIZE - 1], 3 );
     OSTaskCreate( Task6, (void *)&id6, &Task6Stk[TASK_STK_SIZE - 1], 4 );
     OSTaskCreate( Task7, (void *)&id7, &Task7Stk[TASK_STK_SIZE - 1], 2 );
+    OSTaskCreate( Task8, (void *)&id8, &Task8Stk[TASK_STK_SIZE - 1], 5 );
+    OSTaskCreate( Task9, (void *)&id9, &Task9Stk[TASK_STK_SIZE - 1], 8 );
 
     OSTaskDel(OS_PRIO_SELF);             /* La tarea inicial de arranque se auto-elimina */
 }
@@ -128,7 +144,7 @@ void Task1( void *id )
 {
     INT8U err;
 
-    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semáforo) */
+    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
         uart0_puts( "  Task" );
         uart0_putchar( *(char *)id );
         uart0_puts( " iniciada.\n" );
@@ -150,13 +166,13 @@ void Task2( void *id)
     INT8U err;
     uint8 scancode;
 
-    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semáforo) */
+    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
         uart0_puts( "  Task" );
         uart0_putchar( *(char *)id );
         uart0_puts( " iniciada.\n" );
     OSSemPost( uart0Sem );
 
-    while( 1 )                         /* Cada 50 ms (5 ticks) muestrea el keypad y envía el scancode a otras tareas */
+    while( 1 )                         /* Cada 50 ms (5 ticks) muestrea el keypad y envï¿½a el scancode a otras tareas */
     {      
         while( !keypad_pressed() )
             OSTimeDly( 5 );
@@ -173,7 +189,7 @@ void Task3( void *id )
     INT8U err;
     rtc_time_t rtc_time;
 
-    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semáforo) */
+    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
         uart0_puts( "  Task" );
         uart0_putchar( *(char *)id );
         uart0_puts( " iniciada.\n" );
@@ -202,7 +218,7 @@ void Task4( void *id )
     INT8U err;
     INT32U ticks;
 
-    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semáforo) */
+    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
         uart0_puts( "  Task" );
         uart0_putchar( *(char *)id );
         uart0_puts( " iniciada.\n" );
@@ -227,7 +243,7 @@ void Task5( void *id )
     INT8U err;
     uint8 scancode;
 
-    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semáforo) */
+    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
         uart0_puts( "  Task" );
         uart0_putchar( *(char *)id );
         uart0_puts( " iniciada.\n" );
@@ -251,7 +267,7 @@ void Task6( void *id )
     INT8U err;
     uint8 scancode;
 
-    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semáforo) */
+    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
         uart0_puts( "  Task" );
         uart0_putchar( *(char *)id );
         uart0_puts( " iniciada.\n" );
@@ -268,7 +284,7 @@ void Task7( void *id )
 {
     INT8U err;
 
-    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semáforo) */
+    OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
         uart0_puts( "  Task" );
         uart0_putchar( *(char *)id );
         uart0_puts( " iniciada.\n" );
@@ -280,8 +296,50 @@ void Task7( void *id )
         OSSemPend( uart0Sem, 0, &err );
             uart0_puts( "  (Task" );
             uart0_putchar( *(char *)id );
-            uart0_puts( ") Se ha pulsado algún pushbutton...\n" );
+            uart0_puts( ") Se ha pulsado algï¿½n pushbutton...\n" );
         OSSemPost( uart0Sem );
+    }
+}
+
+void Task8(void *id){
+	INT8U err;
+	uint8 scancode;
+
+	OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
+		uart0_puts( "  Task" );
+	    uart0_putchar( *(char *)id );
+	    uart0_puts( " iniciada.\n" );
+	OSSemPost( uart0Sem );
+
+    while(1)
+    {
+    	scancode = *((uint8 *) OSMboxPend( keypadMbox, 0, &err ));
+    	OSSemPend( lcdSem, 0, &err );
+    		lcd_puts(15, 16, BLACK, "- La tecla " );
+    		lcd_puthex(120, 16, BLACK, scancode );
+    		lcd_puts(129, 16, BLACK, " ha sido presionada\n" );
+        OSSemPost( lcdSem );
+    }
+}
+
+void Task9(void *id){
+    INT8U err;
+    rtc_time_t rtc_time;
+
+	OSSemPend( uart0Sem, 0, &err );    /* Muestra un mensaje inicial en la UART0 (protegida por un semï¿½foro) */
+		uart0_puts( "  Task" );
+	    uart0_putchar( *(char *)id );
+	    uart0_puts( " iniciada.\n" );
+	OSSemPost( uart0Sem );
+
+	while(1)
+    {
+		OSTimeDly( 100 );
+        rtc_gettime( &rtc_time );
+        OSSemPend( lcdSem, 0, &err );
+        lcd_puts( 20, 32, BLACK, "(Task 9) Tiempo: " );
+        lcd_putint(20, 48, BLACK, rtc_time.sec );
+        OSSemPost( lcdSem );
     }
 }
 
